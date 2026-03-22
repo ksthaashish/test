@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>漢字帳 — Matching Game</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDMincho:wght@400;700&family=Noto+Sans+JP:wght@300;400;500;700&family=Noto+Serif+JP:wght@400;700;900&display=swap">
+<link rel="stylesheet" href="/css/shared.css">
+<style>
+.screen { display: none; }
+.screen.active { display: block; }
+
+.option-group { display: flex; gap: 8px; flex-wrap: wrap; }
+.opt-btn {
+  padding: 7px 18px; border-radius: var(--radius-sm); border: 2px solid var(--paper-3);
+  background: white; font-size: 0.85rem; font-weight: 600; cursor: pointer;
+  transition: var(--transition); color: var(--ink-3); font-family: inherit;
+}
+.opt-btn:hover  { border-color: var(--indigo); color: var(--indigo); }
+.opt-btn.active { border-color: var(--indigo); background: var(--indigo); color: white; }
+
+.cat-pill-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.cat-pill {
+  padding: 4px 14px; border-radius: 20px; font-size: 0.75rem; font-weight: 500;
+  cursor: pointer; border: 1.5px solid var(--paper-3); background: white;
+  color: var(--ink-3); transition: var(--transition); user-select: none;
+}
+.cat-pill:hover  { border-color: var(--indigo); color: var(--indigo); }
+.cat-pill.active { background: var(--indigo); color: white; border-color: var(--indigo); }
+
+.game-bar { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; flex-wrap: wrap; }
+.timer-display { font-size: 1.5rem; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--ink); min-width: 58px; }
+.timer-display.urgent { color: var(--accent); animation: pulse 1s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+.stat-pill { font-size: .78rem; font-weight: 600; padding: 4px 13px; border-radius: 20px; background: var(--paper-2); color: var(--ink-3); white-space: nowrap; }
+.stat-pill .hi-green { color: var(--green); font-weight: 700; }
+.stat-pill .hi-red   { color: var(--accent); font-weight: 700; }
+.stat-pill .hi-blue  { color: var(--indigo); font-weight: 700; }
+.prog-wrap { flex:1; min-width:100px; height:7px; background:var(--paper-3); border-radius:4px; overflow:hidden; }
+.prog-fill { height:100%; background:linear-gradient(90deg,var(--indigo),#5b7ec4); border-radius:4px; transition:width .4s; }
+
+.board-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+.col-label { font-size:.62rem; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-4); text-align:center; margin-bottom:8px; font-weight:500; }
+.tile-col { display: flex; flex-direction: column; gap: 9px; }
+
+.tile {
+  padding: 13px 10px; border-radius: var(--radius-sm); border: 2px solid var(--paper-3);
+  background: white; cursor: pointer; text-align: center;
+  transition: border-color .15s, background .15s, transform .15s, box-shadow .15s, opacity .2s;
+  box-shadow: var(--shadow-sm); user-select: none; position: relative; line-height: 1.3;
+}
+.tile:hover          { border-color: var(--indigo); transform: translateY(-2px); box-shadow: 0 5px 16px rgba(46,74,122,.15); }
+.tile.sel            { border-color: var(--indigo); background: var(--indigo-l); transform: translateY(-2px); box-shadow: 0 5px 18px rgba(46,74,122,.22); }
+.tile.matched        { border-color: var(--green); background: var(--green-l); opacity: .72; cursor: default; transform: none; }
+.tile.matched::after { content:"\2713"; position:absolute; top:5px; right:8px; font-size:.65rem; color:var(--green); font-weight:700; }
+.tile.shake          { animation: shake .38s ease; }
+.tile.wrong-hi       { border-color: var(--accent) !important; background: #fdf0ee !important; }
+
+@keyframes shake {
+  0%,100%{transform:translateX(0)} 20%{transform:translateX(-7px)}
+  40%{transform:translateX(7px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)}
+}
+
+.tile-kanji { font-family:'BIZ UDMincho','Noto Serif JP',serif; font-size:2rem; font-weight:700; display:block; color:var(--ink); -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
+.tile-meaning { font-size:.62rem; color:var(--ink-4); margin-top:3px; font-style:italic; display:block; }
+.tile-hira { font-family:'BIZ UDMincho','Noto Serif JP',serif; font-size:1.2rem; display:block; color:var(--ink); -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
+
+.flash {
+  position:fixed; top:76px; left:50%; transform:translateX(-50%);
+  padding:9px 22px; border-radius:24px; font-size:.88rem; font-weight:600;
+  pointer-events:none; z-index:400; animation:flashAnim .65s ease forwards; white-space:nowrap;
+}
+.flash.ok  { background:var(--green); color:white; }
+.flash.err { background:var(--accent); color:white; }
+@keyframes flashAnim {
+  0%   { opacity:0; transform:translateX(-50%) translateY(8px) scale(.88); }
+  18%  { opacity:1; transform:translateX(-50%) translateY(0) scale(1); }
+  72%  { opacity:1; }
+  100% { opacity:0; transform:translateX(-50%) translateY(-5px) scale(.95); }
+}
+
+.done-wrap { max-width:500px; margin:0 auto; }
+.done-hero { text-align:center; padding:36px 20px 24px; }
+.done-trophy { font-size:3.8rem; display:block; margin-bottom:10px; }
+.star-row { font-size:2rem; margin-bottom:14px; display:flex; justify-content:center; gap:4px; }
+.done-time { font-size:2.8rem; font-weight:900; color:var(--indigo); line-height:1; }
+.done-time-lbl { font-size:.65rem; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-4); margin-bottom:18px; }
+.done-stats { display:flex; justify-content:center; gap:28px; flex-wrap:wrap; margin-bottom:22px; }
+.ds { text-align:center; }
+.ds-num { font-size:2rem; font-weight:700; line-height:1; }
+.ds-lbl { font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3); margin-top:3px; }
+.recap-item { display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:7px; background:var(--paper); border:1px solid var(--paper-3); margin-bottom:8px; }
+.recap-kanji { font-family:'BIZ UDMincho','Noto Serif JP',serif; font-size:1.7rem; font-weight:700; color:var(--ink); min-width:38px; -webkit-font-smoothing:antialiased; }
+.recap-hira  { font-family:'BIZ UDMincho','Noto Serif JP',serif; font-size:1rem; color:var(--accent); min-width:80px; -webkit-font-smoothing:antialiased; }
+.recap-meaning { font-size:.82rem; color:var(--ink-3); font-style:italic; flex:1; }
+
+@media (max-width:480px) {
+  .tile-kanji{font-size:1.5rem} .tile-hira{font-size:1rem} .tile{padding:10px 7px} .timer-display{font-size:1.2rem}
+}
+</style>
+</head>
+<body class="app-wrap">
+<header>
+  <a class="logo" href="/"><span class="logo-kanji">漢</span><span class="logo-text">Kanji Notebook</span></a>
+  <nav class="site-nav">
+    <a href="/">Home</a>
+    <a href="/examples.html">Examples</a>
+    <a href="/quiz.html">Quiz</a>
+    <a href="/match.html">Match</a>
+  </nav>
+</header>
+
+<main class="page-content">
+
+  <!-- SETUP -->
+  <div class="screen active" id="screen-setup">
+    <div class="page-title" style="margin-bottom:24px">
+      <div><h1>🀄 Kanji Match</h1><p class="text-muted">Match each kanji to its hiragana reading</p></div>
+    </div>
+    <div class="card" style="max-width:540px">
+      <div class="card-header"><h3>Game Setup</h3></div>
+      <div class="card-body" style="display:flex;flex-direction:column;gap:20px">
+        <div class="form-group" style="margin:0">
+          <label class="form-label">Category</label>
+          <div class="cat-pill-row" id="setup-cats"></div>
+        </div>
+        <div class="form-group" style="margin:0">
+          <label class="form-label">Number of Pairs</label>
+          <div class="option-group" id="pair-opts">
+            <button class="opt-btn" onclick="setPairs(4)">4</button>
+            <button class="opt-btn active" onclick="setPairs(6)">6</button>
+            <button class="opt-btn" onclick="setPairs(8)">8</button>
+            <button class="opt-btn" onclick="setPairs(10)">10</button>
+            <button class="opt-btn" onclick="setPairs(12)">12</button>
+          </div>
+          <p style="font-size:.75rem;color:var(--ink-4);font-style:italic;margin-top:6px" id="avail-hint"></p>
+        </div>
+        <div class="form-group" style="margin:0">
+          <label class="form-label">Reading Type</label>
+          <div class="option-group" id="read-opts">
+            <button class="opt-btn active" onclick="setReadMode(this,'kunyomi')">Kun'yomi</button>
+            <button class="opt-btn" onclick="setReadMode(this,'onyomi')">On'yomi</button>
+            <button class="opt-btn" onclick="setReadMode(this,'example')">Example Word</button>
+          </div>
+        </div>
+        <button class="btn btn-primary" style="align-self:flex-start" onclick="startGame()">Start Game →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PLAY -->
+  <div class="screen" id="screen-play">
+    <div class="page-title" style="margin-bottom:16px">
+      <h1>🀄 Kanji Match</h1>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-ghost btn-sm" onclick="shuffleBoard()">↺ Shuffle</button>
+        <button class="btn btn-ghost btn-sm" onclick="goSetup()">← Setup</button>
+      </div>
+    </div>
+    <div class="game-bar">
+      <div class="timer-display" id="timer">0:00</div>
+      <div class="prog-wrap"><div class="prog-fill" id="prog" style="width:0%"></div></div>
+      <div class="stat-pill">Pairs: <span class="hi-blue" id="stat-done">0</span> / <span id="stat-total">0</span></div>
+      <div class="stat-pill">Mistakes: <span class="hi-red" id="stat-mis">0</span></div>
+    </div>
+    <div class="board-cols">
+      <div><div class="col-label">Kanji</div><div class="tile-col" id="col-k"></div></div>
+      <div><div class="col-label">Reading</div><div class="tile-col" id="col-h"></div></div>
+    </div>
+  </div>
+
+  <!-- DONE -->
+  <div class="screen" id="screen-done">
+    <div class="done-wrap">
+      <div class="card">
+        <div class="done-hero">
+          <span class="done-trophy" id="done-trophy">🏆</span>
+          <div class="star-row" id="done-stars"></div>
+          <div class="done-time" id="done-time">0:00</div>
+          <div class="done-time-lbl">Time</div>
+          <div class="done-stats">
+            <div class="ds"><div class="ds-num" style="color:var(--green)"  id="done-pairs">0</div><div class="ds-lbl">Pairs</div></div>
+            <div class="ds"><div class="ds-num" style="color:var(--accent)" id="done-mis">0</div><div class="ds-lbl">Mistakes</div></div>
+            <div class="ds"><div class="ds-num" style="color:var(--indigo)" id="done-score">0</div><div class="ds-lbl">Score</div></div>
+          </div>
+          <p class="text-muted" id="done-msg" style="font-style:italic;margin-bottom:20px"></p>
+          <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+            <button class="btn btn-primary" onclick="startGame()">↺ Play Again</button>
+            <button class="btn btn-ghost"   onclick="goSetup()">Change Setup</button>
+            <a href="/" class="btn btn-ghost">Home</a>
+          </div>
+        </div>
+        <div style="padding:0 20px 20px">
+          <div style="font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px;display:flex;align-items:center;gap:8px">
+            All Pairs <span style="flex:1;height:1px;background:var(--paper-3);display:inline-block"></span>
+          </div>
+          <div id="recap"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+<div id="toast-container"></div>
+<script src="/js/shared.js"></script>
+<script>
+// ── State ──────────────────────────────────────────────────────────────────────
+var allKanji  = [];
+var pairCount = 6;
+var readMode  = 'kunyomi';
+var catFilter = 'all';
+var pairs     = [];
+var matchedSet, selK, selH, isLocked, mistakes, timerSecs, timerHandle, startMs;
+
+// ── Init ───────────────────────────────────────────────────────────────────────
+async function init() {
+  try {
+    allKanji = await api.get('/api/kanji');
+    buildCatBar();
+    updateHint();
+  } catch(e) { showToast('Failed to load kanji', 'error'); }
+}
+
+// ── Setup ──────────────────────────────────────────────────────────────────────
+function buildCatBar() {
+  var cats = ['all'].concat([...new Set(allKanji.map(function(k){return k.category;}))].sort());
+  var bar = document.getElementById('setup-cats');
+  bar.innerHTML = cats.map(function(c){
+    return '<span class="cat-pill ' + (c===catFilter?'active':'') + '" data-cat="' + c + '">' + (c==='all'?'All':c) + '</span>';
+  }).join('');
+  bar.addEventListener('click', function(e){
+    var pill = e.target.closest('.cat-pill');
+    if (!pill) return;
+    catFilter = pill.dataset.cat;
+    bar.querySelectorAll('.cat-pill').forEach(function(p){p.classList.toggle('active', p===pill);});
+    updateHint();
+  });
+}
+
+function getReading(k) {
+  if (readMode === 'kunyomi') return (k.kunyomi  || []).filter(Boolean).join('、') || '';
+  if (readMode === 'onyomi')  return (k.onyomi   || []).filter(Boolean).join('、') || '';
+  if (readMode === 'example') return ((k.examples || [])[0] || {}).hiragana || '';
+  return '';
+}
+
+function getKanjiDisplay(k) {
+  if (readMode === 'example') {
+    var ex = (k.examples || [])[0];
+    return ex ? ex.kanji : k.character;
+  }
+  return k.character;
+}
+
+function getPool() {
+  var base = catFilter === 'all' ? allKanji : allKanji.filter(function(k){return k.category===catFilter;});
+  return base.filter(function(k){return getReading(k).length > 0;});
+}
+
+function updateHint() {
+  var n = getPool().length;
+  var el = document.getElementById('avail-hint');
+  el.textContent = n + ' kanji available for this combination.';
+  el.style.color = n < pairCount ? 'var(--accent)' : 'var(--ink-4)';
+}
+
+function setPairs(n) {
+  pairCount = n;
+  document.querySelectorAll('#pair-opts .opt-btn').forEach(function(b){
+    b.classList.toggle('active', parseInt(b.textContent) === n);
+  });
+  updateHint();
+}
+
+function setReadMode(btn, m) {
+  readMode = m;
+  document.querySelectorAll('#read-opts .opt-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  updateHint();
+}
+
+// ── Screens ────────────────────────────────────────────────────────────────────
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+  document.getElementById('screen-'+id).classList.add('active');
+}
+
+function goSetup() { stopTimer(); showScreen('setup'); }
+
+// ── Game ───────────────────────────────────────────────────────────────────────
+function shuffle(arr) { return arr.slice().sort(function(){return Math.random()-.5;}); }
+
+function startGame() {
+  var pool = getPool();
+  if (pool.length < 2) { showToast('Not enough kanji. Try a different category or reading type.', 'error'); return; }
+  var count  = Math.min(pairCount, pool.length);
+  var chosen = shuffle(pool).slice(0, count);
+
+  pairs = chosen.map(function(k, i) {
+    return { idx: i, kanjiText: getKanjiDisplay(k), reading: getReading(k), meaning: k.meaning, category: k.category };
+  });
+
+  matchedSet = new Set();
+  selK = null; selH = null; isLocked = false; mistakes = 0;
+
+  renderBoard();
+  showScreen('play');
+  startTimer();
+}
+
+// ── Board (uses numeric idx only — no kanji chars in DOM ids or onclick args) ──
+function renderBoard() {
+  var kOrder = shuffle(pairs);
+  var hOrder = shuffle(pairs);
+
+  var colK = document.getElementById('col-k');
+  var colH = document.getElementById('col-h');
+
+  colK.innerHTML = kOrder.map(function(p){
+    return '<div class="tile' + (matchedSet.has(p.idx)?' matched':'') + '" data-idx="' + p.idx + '" data-side="k">' +
+      '<span class="tile-kanji">' + p.kanjiText + '</span>' +
+      '<span class="tile-meaning">' + p.meaning + '</span>' +
+      '</div>';
+  }).join('');
+
+  colH.innerHTML = hOrder.map(function(p){
+    return '<div class="tile' + (matchedSet.has(p.idx)?' matched':'') + '" data-idx="' + p.idx + '" data-side="h">' +
+      '<span class="tile-hira">' + p.reading + '</span>' +
+      '</div>';
+  }).join('');
+
+  // Single delegated listener per column (removed & re-added each render)
+  colK.onclick = handleClick;
+  colH.onclick = handleClick;
+
+  updateBar();
+}
+
+function handleClick(e) {
+  if (isLocked) return;
+  var tile = e.target.closest('.tile');
+  if (!tile || tile.classList.contains('matched')) return;
+
+  var idx  = parseInt(tile.dataset.idx, 10);
+  var side = tile.dataset.side;
+
+  if (side === 'k') {
+    if (selK === idx) {
+      selK = null; tile.classList.remove('sel');
+    } else {
+      if (selK !== null) {
+        var old = document.querySelector('#col-k .tile[data-idx="' + selK + '"]');
+        if (old) old.classList.remove('sel');
+      }
+      selK = idx; tile.classList.add('sel');
+    }
+  } else {
+    if (selH === idx) {
+      selH = null; tile.classList.remove('sel');
+    } else {
+      if (selH !== null) {
+        var old2 = document.querySelector('#col-h .tile[data-idx="' + selH + '"]');
+        if (old2) old2.classList.remove('sel');
+      }
+      selH = idx; tile.classList.add('sel');
+    }
+  }
+
+  if (selK !== null && selH !== null) checkMatch();
+}
+
+function checkMatch() {
+  isLocked = true;
+  var kTile = document.querySelector('#col-k .tile[data-idx="' + selK + '"]');
+  var hTile = document.querySelector('#col-h .tile[data-idx="' + selH + '"]');
+
+  if (selK === selH) {
+    // Correct
+    [kTile, hTile].forEach(function(t){ t.classList.remove('sel'); t.classList.add('matched'); });
+    matchedSet.add(selK);
+    selK = null; selH = null; isLocked = false;
+    flash('正解！ Correct! 🎉', 'ok');
+    updateBar();
+    if (matchedSet.size === pairs.length) { setTimeout(finishGame, 700); }
+  } else {
+    // Wrong
+    mistakes++;
+    [kTile, hTile].forEach(function(t){ t.classList.add('shake','wrong-hi'); });
+    flash('違います！ Not a match ✗', 'err');
+    updateBar();
+    setTimeout(function(){
+      [kTile, hTile].forEach(function(t){ t.classList.remove('sel','shake','wrong-hi'); });
+      selK = null; selH = null; isLocked = false;
+    }, 750);
+  }
+}
+
+function shuffleBoard() {
+  if (isLocked) return;
+  selK = null; selH = null;
+  renderBoard();
+}
+
+// ── UI helpers ─────────────────────────────────────────────────────────────────
+function updateBar() {
+  document.getElementById('stat-done').textContent  = matchedSet.size;
+  document.getElementById('stat-total').textContent = pairs.length;
+  document.getElementById('stat-mis').textContent   = mistakes;
+  document.getElementById('prog').style.width = pairs.length ? (matchedSet.size/pairs.length*100)+'%' : '0%';
+}
+
+function flash(msg, type) {
+  var el = document.createElement('div');
+  el.className = 'flash ' + type;
+  el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(function(){el.remove();}, 700);
+}
+
+// ── Timer ──────────────────────────────────────────────────────────────────────
+function fmt(s) { return Math.floor(s/60) + ':' + String(s%60).padStart(2,'0'); }
+
+function startTimer() {
+  stopTimer();
+  startMs = Date.now();
+  timerSecs = 0;
+  timerHandle = setInterval(function(){
+    timerSecs = Math.floor((Date.now()-startMs)/1000);
+    var el = document.getElementById('timer');
+    if (el) { el.textContent = fmt(timerSecs); el.classList.toggle('urgent', timerSecs > pairs.length*10); }
+  }, 500);
+}
+
+function stopTimer() {
+  if (timerHandle) { clearInterval(timerHandle); timerHandle = null; }
+  timerSecs = Math.floor((Date.now() - (startMs||Date.now())) / 1000);
+}
+
+// ── Finish ─────────────────────────────────────────────────────────────────────
+function finishGame() {
+  stopTimer();
+  var total  = pairs.length;
+  var score  = Math.max(0, total*100 - mistakes*15 - Math.floor(timerSecs/5));
+  var stars  = mistakes===0 ? 3 : mistakes<=2 ? 2 : mistakes<=5 ? 1 : 0;
+  var trophies = ['💪','🥈','🥇','🏆'];
+  var msgs     = ["Keep practicing — you'll get there!", "Good effort! Review the tricky ones.", "Well done! Almost perfect.", "完璧！ Perfect — no mistakes!"];
+
+  document.getElementById('done-time').textContent  = fmt(timerSecs);
+  document.getElementById('done-pairs').textContent = total;
+  document.getElementById('done-mis').textContent   = mistakes;
+  document.getElementById('done-score').textContent = score;
+  document.getElementById('done-trophy').textContent = trophies[stars];
+  document.getElementById('done-stars').innerHTML   = '⭐'.repeat(stars) + '☆'.repeat(3-stars);
+  document.getElementById('done-msg').textContent   = msgs[stars];
+
+  document.getElementById('recap').innerHTML = pairs.map(function(p){
+    return '<div class="recap-item">' +
+      '<span class="recap-kanji">' + p.kanjiText + '</span>' +
+      '<span class="recap-hira">' + p.reading + '</span>' +
+      '<span class="recap-meaning">' + p.meaning + '</span>' +
+      '<span class="badge badge-' + p.category + '">' + p.category + '</span>' +
+      '</div>';
+  }).join('');
+
+  showScreen('done');
+}
+
+init();
+</script>
+</body>
+</html>

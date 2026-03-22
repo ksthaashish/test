@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>漢字帳 — Detail</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDMincho:wght@400;700&family=Noto+Sans+JP:wght@300;400;500;700&family=Noto+Serif+JP:wght@400;700;900&display=swap">
+<link rel="stylesheet" href="/css/shared.css">
+<style>
+.detail-hero {
+  display: flex;
+  align-items: flex-start;
+  gap: 32px;
+  margin-bottom: 36px;
+  flex-wrap: wrap;
+}
+
+.detail-char-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  min-width: 140px;
+}
+
+.detail-char {
+  font-family: 'BIZ UDMincho', 'Noto Serif JP', serif;
+  font-size: 8rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--ink);
+  text-shadow: 3px 4px 0 rgba(26,18,8,.07);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.detail-info { flex: 1; min-width: 200px; }
+.detail-meaning { font-size: 1.8rem; font-weight: 600; font-style: italic; margin-bottom: 20px; }
+
+.readings-grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 6px 16px;
+  align-items: start;
+  margin-bottom: 8px;
+}
+
+.reading-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+  padding-top: 3px;
+  font-weight: 500;
+}
+
+.reading-val {
+  font-family: 'BIZ UDMincho', 'Noto Serif JP', serif;
+  font-size: 1.3rem;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.reading-val.on-val { color: var(--indigo); }
+.reading-val.kun-val { color: var(--accent); }
+
+.section-title {
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.section-title::after { content:''; flex:1; height:1px; background:var(--paper-3); }
+</style>
+</head>
+<body class="app-wrap">
+
+<header>
+  <a class="logo" href="/">
+    <span class="logo-kanji">漢</span>
+    <span class="logo-text">Kanji Notebook</span>
+  </a>
+  <nav class="site-nav">
+    <a href="/">Home</a>
+    <a href="/examples.html">Examples</a>
+    <a href="/quiz.html">Quiz</a>
+    <a href="/match.html">Match</a>
+  </nav>
+</header>
+
+<main class="page-content" id="detail-content">
+  <p class="text-muted">Loading…</p>
+</main>
+
+<div id="toast-container"></div>
+<script src="/js/shared.js"></script>
+<script>
+async function loadDetail() {
+  const params = new URLSearchParams(window.location.search);
+  const char = decodeURIComponent(params.get('k') || '');
+
+  if (!char) {
+    document.getElementById('detail-content').innerHTML = '<p>No kanji specified. <a href="/">Go back</a></p>';
+    return;
+  }
+
+  let all;
+  try { all = await api.get('/api/kanji'); }
+  catch { document.getElementById('detail-content').innerHTML = '<p>Error loading data.</p>'; return; }
+
+  const k = all.find(x => x.character === char);
+  if (!k) {
+    document.getElementById('detail-content').innerHTML = `<p>"${char}" not found. <a href="/">Go back</a></p>`;
+    return;
+  }
+
+  document.title = `${k.character} — Kanji Detail`;
+
+  const exTable = (k.examples || []).length
+    ? `<table>
+        <thead><tr><th>Kanji</th><th>Hiragana</th><th>English</th></tr></thead>
+        <tbody>${(k.examples||[]).map(e => `
+          <tr>
+            <td class="td-kanji">${e.kanji}</td>
+            <td class="td-hira">${e.hiragana}</td>
+            <td>${e.english}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>`
+    : '<p class="text-muted" style="font-style:italic">No examples yet.</p>';
+
+  document.getElementById('detail-content').innerHTML = `
+    <div style="margin-bottom:24px">
+      <a href="/" class="btn btn-ghost btn-sm">← Back</a>
+    </div>
+
+    <div class="detail-hero">
+      <div class="detail-char-block">
+        <span class="detail-char">${k.character}</span>
+        <span class="${badgeClass(k.category)}">${k.category}</span>
+      </div>
+
+      <div class="detail-info">
+        <div class="detail-meaning">${k.meaning}</div>
+        <div class="readings-grid">
+          <span class="reading-label">On'yomi</span>
+          <span class="reading-val on-val">${(k.onyomi||[]).join('、 ') || '—'}</span>
+          <span class="reading-label">Kun'yomi</span>
+          <span class="reading-val kun-val">${(k.kunyomi||[]).join('、 ') || '—'}</span>
+          <span class="reading-label">Category</span>
+          <span class="reading-val">${k.category}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title">Example Sentences</div>
+    <div class="table-wrap card" style="padding:0;overflow:hidden">${exTable}</div>
+  `;
+}
+
+loadDetail();
+</script>
+</body>
+</html>

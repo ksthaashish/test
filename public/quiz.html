@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>漢字帳 — Quiz</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDMincho:wght@400;700&family=Noto+Sans+JP:wght@300;400;500;700&family=Noto+Serif+JP:wght@400;700;900&display=swap">
+<link rel="stylesheet" href="/css/shared.css">
+<style>
+/* ── Steps ─────────────────────────────────────────────────────────────────── */
+.step { display: none; }
+.step.active { display: block; animation: fadeIn .25s ease; }
+
+/* ── Step 1: Kanji selector ─────────────────────────────────────────────────── */
+.cat-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+
+.cat-pill {
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1.5px solid var(--paper-3);
+  background: white;
+  color: var(--ink-3);
+  transition: var(--transition);
+  user-select: none;
+}
+
+.cat-pill:hover { border-color: var(--indigo); color: var(--indigo); }
+.cat-pill.active { background: var(--indigo); color: white; border-color: var(--indigo); }
+
+.kanji-select-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(88px, 1fr));
+  gap: 10px;
+  max-height: 380px;
+  overflow-y: auto;
+  padding: 4px 2px;
+  margin-bottom: 20px;
+}
+
+.kanji-check-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 12px 8px 10px;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--paper-3);
+  cursor: pointer;
+  transition: all .18s ease;
+  user-select: none;
+  background: white;
+  position: relative;
+}
+
+.kanji-check-card:hover {
+  border-color: var(--indigo);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.kanji-check-card.selected {
+  border-color: var(--indigo);
+  background: var(--indigo-l);
+}
+
+.kanji-check-card.selected::after {
+  content: '✓';
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  font-size: 0.6rem;
+  color: var(--indigo);
+  font-weight: 700;
+}
+
+.kcheck-char {
+  font-family: 'BIZ UDMincho', 'Noto Serif JP', serif;
+  font-size: 2.1rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.kanji-check-card.selected .kcheck-char { color: var(--indigo); }
+
+.kcheck-meaning {
+  font-size: 0.62rem;
+  color: var(--ink-3);
+  text-align: center;
+  line-height: 1.3;
+  max-width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.kcheck-cat {
+  font-size: 0.55rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+}
+
+.selection-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+/* ── Step 2: Mode selection ─────────────────────────────────────────────────── */
+.mode-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
+  gap: 14px;
+  margin-bottom: 28px;
+}
+
+.mode-card {
+  border: 2px solid var(--paper-3);
+  border-radius: var(--radius);
+  padding: 22px 18px;
+  cursor: pointer;
+  transition: all .2s ease;
+  text-align: center;
+  background: white;
+}
+
+.mode-card:hover { border-color: var(--indigo); box-shadow: var(--shadow); transform: translateY(-2px); }
+.mode-card.selected { border-color: var(--indigo); background: var(--indigo-l); }
+.mode-card-icon { font-size: 2.2rem; margin-bottom: 10px; display: block; font-family: 'BIZ UDMincho', serif; }
+.mode-card-title { font-weight: 700; font-size: 0.92rem; margin-bottom: 5px; }
+.mode-card-desc { font-size: 0.76rem; color: var(--ink-3); font-style: italic; }
+
+/* ── Step 3: Active Quiz ─────────────────────────────────────────────────────── */
+.quiz-topbar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.progress-bar-wrap {
+  flex: 1;
+  min-width: 160px;
+  height: 7px;
+  background: var(--paper-3);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--indigo), #5b7ec4);
+  border-radius: 4px;
+  transition: width .4s ease;
+}
+
+.quiz-counter { font-size: 0.78rem; color: var(--ink-3); white-space: nowrap; }
+
+.quiz-score-pill {
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 3px 12px;
+  border-radius: 20px;
+  background: var(--paper-2);
+  white-space: nowrap;
+}
+
+.quiz-score-pill .correct-count { color: var(--green); }
+.quiz-score-pill .wrong-count   { color: var(--accent); }
+
+/* Question card */
+.question-card {
+  background: white;
+  border: 1px solid var(--paper-3);
+  border-radius: var(--radius);
+  padding: 40px 28px 32px;
+  text-align: center;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-sm);
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.q-mode-label {
+  font-size: 0.66rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+  font-weight: 500;
+}
+
+.q-prompt {
+  font-family: 'BIZ UDMincho', 'Noto Serif JP', serif;
+  color: var(--ink);
+  line-height: 1.15;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.q-prompt.size-xl  { font-size: 6.5rem; font-weight: 700; }
+.q-prompt.size-lg  { font-size: 3rem;   font-weight: 700; }
+.q-prompt.size-md  { font-size: 1.4rem; font-weight: 400; }
+
+/* Answer options */
+.options-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.opt-btn {
+  padding: 16px 14px;
+  border: 2px solid var(--paper-3);
+  border-radius: var(--radius-sm);
+  background: white;
+  cursor: pointer;
+  font-family: 'BIZ UDMincho', 'Noto Serif JP', serif;
+  font-size: 1.05rem;
+  color: var(--ink);
+  transition: all .18s ease;
+  text-align: center;
+  line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  position: relative;
+}
+
+.opt-btn:hover:not(:disabled) {
+  border-color: var(--indigo);
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-2px);
+  background: var(--indigo-l);
+}
+
+.opt-btn:disabled { cursor: default; }
+
+.opt-btn.correct {
+  border-color: var(--green);
+  background: var(--green-l);
+  color: var(--green);
+  font-weight: 700;
+}
+
+.opt-btn.correct::after {
+  content: '✓';
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  font-size: 0.9rem;
+}
+
+.opt-btn.wrong {
+  border-color: var(--accent);
+  background: #fdf0ee;
+  color: var(--accent);
+}
+
+.opt-btn.wrong::after {
+  content: '✗';
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  font-size: 0.9rem;
+}
+
+/* Answer reveal panel */
+.answer-reveal {
+  border-radius: var(--radius);
+  border: 2px solid transparent;
+  padding: 18px 22px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  animation: slideUp .25s ease;
+  flex-wrap: wrap;
+}
+
+.answer-reveal.reveal-correct {
+  background: var(--green-l);
+  border-color: rgba(58,107,64,.25);
+}
+
+.answer-reveal.reveal-wrong {
+  background: #fdf0ee;
+  border-color: rgba(200,75,47,.25);
+}
+
+.reveal-verdict {
+  font-size: 1.6rem;
+  flex-shrink: 0;
+}
+
+.reveal-kanji {
+  font-family: 'BIZ UDMincho', 'Noto Serif JP', serif;
+  font-size: 2.6rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  flex-shrink: 0;
+}
+
+.reveal-details {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.reveal-meaning {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.reveal-reading {
+  font-family: 'BIZ UDMincho', 'Noto Serif JP', serif;
+  font-size: 0.92rem;
+  color: var(--accent);
+  -webkit-font-smoothing: antialiased;
+}
+
+.reveal-example {
+  font-size: 0.8rem;
+  color: var(--ink-3);
+  font-style: italic;
+}
+
+.reveal-tag {
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 700;
+  padding: 2px 10px;
+  border-radius: 20px;
+  flex-shrink: 0;
+}
+
+.reveal-tag.tag-correct { background: var(--green); color: white; }
+.reveal-tag.tag-wrong   { background: var(--accent); color: white; }
+
+/* Next button row */
+.quiz-nav {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* ── Final Results ────────────────────────────────────────────────────────────── */
+.results-hero {
+  text-align: center;
+  padding: 36px 24px 28px;
+  border-bottom: 1px solid var(--paper-2);
+  margin-bottom: 28px;
+}
+
+.results-score-ring {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  border: 6px solid var(--indigo);
+  margin-bottom: 16px;
+  flex-direction: column;
+  background: var(--indigo-l);
+}
+
+.results-pct {
+  font-size: 2.4rem;
+  font-weight: 900;
+  color: var(--indigo);
+  line-height: 1;
+}
+
+.results-pct-label {
+  font-size: 0.65rem;
+  color: var(--ink-3);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.results-verdict {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.results-sub { font-size: 0.9rem; color: var(--ink-3); font-style: italic; }
+
+.results-stats {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.result-stat { text-align: center; }
+.result-stat-num { font-size: 2rem; font-weight: 700; line-height: 1; }
+.result-stat-num.green { color: var(--green); }
+.result-stat-num.red   { color: var(--accent); }
+.result-stat-label { font-size: 0.65rem; color: var(--ink-3); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 3px; }
+
+/* Results breakdown table */
+.results-breakdown-title {
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.results-breakdown-title::after { content:''; flex:1; height:1px; background:var(--paper-3); }
+
+.breakdown-table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+.breakdown-table th {
+  text-align: left;
+  padding: 8px 12px;
+  font-size: 0.64rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  background: var(--paper-2);
+  border-bottom: 2px solid var(--paper-3);
+}
+
+.breakdown-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--paper-2);
+  vertical-align: middle;
+}
+
+.breakdown-table tr:last-child td { border-bottom: none; }
+.breakdown-table tr:hover td { background: var(--paper); }
+.breakdown-table tr.row-wrong td { background: #fffafa; }
+.breakdown-table tr.row-correct td { background: #fafffa; }
+
+.result-verdict-icon { font-size: 1rem; }
+.bd-kanji { font-family: 'BIZ UDMincho','Noto Serif JP',serif; font-size:1.3rem; font-weight:700; -webkit-font-smoothing:antialiased; }
+.bd-hira  { font-family: 'BIZ UDMincho','Noto Serif JP',serif; color:var(--accent); -webkit-font-smoothing:antialiased; }
+
+/* Responsive */
+@media (max-width: 600px) {
+  .options-grid { grid-template-columns: 1fr; }
+  .q-prompt.size-xl { font-size: 4.5rem; }
+  .q-prompt.size-lg { font-size: 2.2rem; }
+  .kanji-select-grid { grid-template-columns: repeat(auto-fill, minmax(72px,1fr)); }
+  .reveal-kanji { font-size: 2rem; }
+  .mode-cards { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body class="app-wrap">
+
+<header>
+  <a class="logo" href="/"><span class="logo-kanji">漢</span><span class="logo-text">Kanji Notebook</span></a>
+  <nav class="site-nav">
+    <a href="/">Home</a>
+    <a href="/examples.html">Examples</a>
+    <a href="/quiz.html">Quiz</a>
+    <a href="/match.html">Match</a>
+  </nav>
+</header>
+
+<main class="page-content">
+  <div class="page-title">
+    <h1>Quiz</h1>
+    <button class="btn btn-ghost btn-sm" id="restart-btn" onclick="restart()" style="display:none">↺ Restart</button>
+  </div>
+
+  <!-- ── Step 1: Pick kanji ─────────────────────────────────────────────────── -->
+  <div class="step active" id="step-1">
+    <div class="card">
+      <div class="card-header">
+        <h3>Step 1 — Select Kanji to Study</h3>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-ghost btn-sm" onclick="selectAll()">All</button>
+          <button class="btn btn-ghost btn-sm" onclick="selectNone()">None</button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="cat-filter-bar" id="cat-filter-bar"></div>
+        <div class="kanji-select-grid" id="kanji-select-grid">
+          <p class="text-muted">Loading…</p>
+        </div>
+        <div class="selection-info">
+          <p class="text-muted" id="selection-info">0 selected</p>
+          <button class="btn btn-primary" onclick="goStep2()">Next: Choose Mode →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Step 2: Choose mode ───────────────────────────────────────────────── -->
+  <div class="step" id="step-2">
+    <div class="card">
+      <div class="card-header">
+        <h3>Step 2 — Choose Quiz Mode</h3>
+        <button class="btn btn-ghost btn-sm" onclick="goStep(1)">← Back</button>
+      </div>
+      <div class="card-body">
+        <div class="mode-cards">
+          <div class="mode-card selected" data-mode="meaning" onclick="selectMode('meaning')">
+            <span class="mode-card-icon">意</span>
+            <div class="mode-card-title">Kanji → Meaning</div>
+            <div class="mode-card-desc">See a kanji, pick its English meaning</div>
+          </div>
+          <div class="mode-card" data-mode="kanji-hira" onclick="selectMode('kanji-hira')">
+            <span class="mode-card-icon">読</span>
+            <div class="mode-card-title">Kanji → Hiragana</div>
+            <div class="mode-card-desc">See a kanji example, choose its reading</div>
+          </div>
+          <div class="mode-card" data-mode="hira-kanji" onclick="selectMode('hira-kanji')">
+            <span class="mode-card-icon">漢</span>
+            <div class="mode-card-title">Hiragana → Kanji</div>
+            <div class="mode-card-desc">See a reading, pick the correct kanji</div>
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="startQuiz()">Start Quiz →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Step 3: Active quiz ───────────────────────────────────────────────── -->
+  <div class="step" id="step-3">
+    <div class="quiz-topbar">
+      <span class="quiz-counter" id="q-counter">1 / 0</span>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+      </div>
+      <span class="quiz-score-pill">
+        <span class="correct-count" id="live-correct">0</span>
+        <span style="color:var(--ink-4)"> / </span>
+        <span class="wrong-count" id="live-wrong">0</span>
+      </span>
+    </div>
+
+    <div class="question-card">
+      <div class="q-mode-label" id="q-label"></div>
+      <div class="q-prompt" id="q-prompt"></div>
+    </div>
+
+    <div class="options-grid" id="q-options"></div>
+
+    <!-- Answer reveal (shown after answering) -->
+    <div class="answer-reveal hidden" id="answer-reveal">
+      <span class="reveal-verdict" id="reveal-verdict"></span>
+      <span class="reveal-kanji" id="reveal-kanji"></span>
+      <div class="reveal-details">
+        <div class="reveal-meaning" id="reveal-meaning"></div>
+        <div class="reveal-reading" id="reveal-reading"></div>
+        <div class="reveal-example" id="reveal-example"></div>
+      </div>
+      <span class="reveal-tag" id="reveal-tag"></span>
+    </div>
+
+    <div class="quiz-nav">
+      <button class="btn btn-secondary hidden" id="next-btn" onclick="nextQuestion()">Next Question →</button>
+      <button class="btn btn-primary hidden" id="finish-btn" onclick="showResults()">See Results →</button>
+    </div>
+  </div>
+
+  <!-- ── Final Results ─────────────────────────────────────────────────────── -->
+  <div class="step" id="step-final">
+    <div class="card" style="margin-bottom:24px">
+      <div class="results-hero">
+        <div class="results-score-ring">
+          <span class="results-pct" id="final-pct">0%</span>
+          <span class="results-pct-label">Score</span>
+        </div>
+        <div class="results-verdict" id="final-verdict"></div>
+        <div class="results-sub" id="final-sub"></div>
+        <div class="results-stats">
+          <div class="result-stat">
+            <div class="result-stat-num green" id="final-correct">0</div>
+            <div class="result-stat-label">Correct</div>
+          </div>
+          <div class="result-stat">
+            <div class="result-stat-num red" id="final-wrong">0</div>
+            <div class="result-stat-label">Wrong</div>
+          </div>
+          <div class="result-stat">
+            <div class="result-stat-num" id="final-total" style="color:var(--indigo)">0</div>
+            <div class="result-stat-label">Total</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="padding:0 24px 24px">
+        <div class="results-breakdown-title">Question-by-Question Breakdown</div>
+        <div class="table-wrap">
+          <table class="breakdown-table" id="breakdown-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Result</th>
+                <th>Kanji</th>
+                <th>Meaning</th>
+                <th>Reading</th>
+                <th>Your Answer</th>
+              </tr>
+            </thead>
+            <tbody id="breakdown-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:12px;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="restart()">↺ Try Again</button>
+      <button class="btn btn-ghost" onclick="goStep(2)">Change Mode</button>
+      <a href="/" class="btn btn-ghost">Home</a>
+    </div>
+  </div>
+</main>
+
+<div id="toast-container"></div>
+<script src="/js/shared.js"></script>
+<script>
+let allKanji      = [];
+let selectedChars = new Set();
+let quizMode      = 'meaning';
+let questions     = [];
+let qIndex        = 0;
+let score         = 0;
+let wrongCount    = 0;
+let answered      = false;
+let history       = [];   // {q, chosen, correct: bool}
+let catFilter     = 'all';
+
+// ── Bootstrap ─────────────────────────────────────────────────────────────────
+async function init() {
+  try {
+    allKanji = await api.get('/api/kanji');
+    buildCatFilter();
+    renderSelector();
+    selectAll();
+  } catch(e) {
+    showToast('Failed to load kanji', 'error');
+  }
+}
+
+// ── Category filter ───────────────────────────────────────────────────────────
+function buildCatFilter() {
+  const cats = ['all', ...new Set(allKanji.map(k => k.category)).values()].sort((a,b) => a==='all'?-1:a.localeCompare(b));
+  const bar = document.getElementById('cat-filter-bar');
+  bar.innerHTML = cats.map(c =>
+    `<span class="cat-pill ${c==='all'?'active':''}" onclick="setCatFilter(this,'${c}')">${c==='all'?'All':c}</span>`
+  ).join('');
+}
+
+function setCatFilter(el, cat) {
+  catFilter = cat;
+  document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  renderSelector();
+}
+
+// ── Kanji selector ────────────────────────────────────────────────────────────
+function renderSelector() {
+  const list = catFilter === 'all' ? allKanji : allKanji.filter(k => k.category === catFilter);
+  const grid = document.getElementById('kanji-select-grid');
+
+  if (!list.length) {
+    grid.innerHTML = '<p class="text-muted" style="grid-column:1/-1;padding:24px">No kanji in this category.</p>';
+    return;
+  }
+
+  grid.innerHTML = list.map(k => `
+    <div class="kanji-check-card ${selectedChars.has(k.character) ? 'selected' : ''}"
+         onclick="toggleKanji('${k.character}', this)">
+      <span class="kcheck-char">${k.character}</span>
+      <span class="kcheck-meaning">${k.meaning}</span>
+      <span class="kcheck-cat">${k.category}</span>
+    </div>
+  `).join('');
+
+  updateInfo();
+}
+
+function toggleKanji(char, card) {
+  if (selectedChars.has(char)) {
+    selectedChars.delete(char);
+    card.classList.remove('selected');
+  } else {
+    selectedChars.add(char);
+    card.classList.add('selected');
+  }
+  updateInfo();
+}
+
+function selectAll() {
+  allKanji.forEach(k => selectedChars.add(k.character));
+  document.querySelectorAll('.kanji-check-card').forEach(c => c.classList.add('selected'));
+  updateInfo();
+}
+
+function selectNone() {
+  selectedChars.clear();
+  document.querySelectorAll('.kanji-check-card').forEach(c => c.classList.remove('selected'));
+  updateInfo();
+}
+
+function updateInfo() {
+  document.getElementById('selection-info').textContent =
+    `${selectedChars.size} of ${allKanji.length} kanji selected`;
+}
+
+// ── Mode ──────────────────────────────────────────────────────────────────────
+function selectMode(m) {
+  quizMode = m;
+  document.querySelectorAll('.mode-card').forEach(c => c.classList.toggle('selected', c.dataset.mode === m));
+}
+
+// ── Step nav ──────────────────────────────────────────────────────────────────
+function goStep(n) {
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById(`step-${n}`)?.classList.add('active');
+}
+
+function goStep2() {
+  if (!selectedChars.size) { showToast('Select at least one kanji', 'error'); return; }
+  goStep(2);
+}
+
+// ── Build questions ───────────────────────────────────────────────────────────
+function shuffle(arr) { return [...arr].sort(() => Math.random() - .5); }
+
+function buildQuestions() {
+  const kanji = allKanji.filter(k => selectedChars.has(k.character));
+
+  if (quizMode === 'meaning') {
+    return shuffle(
+      kanji.filter(k => k.meaning).map(k => ({
+        promptText:  k.character,
+        promptSize:  'size-xl',
+        promptLabel: 'What is the meaning of this kanji?',
+        answer:      k.meaning,
+        options:     shuffle([k.meaning,
+          ...shuffle(allKanji.filter(x => x.character !== k.character)).slice(0,3).map(x => x.meaning)]),
+        // reveal data
+        revealKanji:   k.character,
+        revealMeaning: k.meaning,
+        revealReading: [(k.onyomi||[]).join('、'), (k.kunyomi||[]).join('、')].filter(Boolean).join(' · '),
+        revealExample: (k.examples||[])[0] ? `${k.examples[0].kanji} — ${k.examples[0].english}` : '',
+      }))
+    );
+  }
+
+  // example-based modes
+  const examples = [];
+  for (const k of kanji)
+    for (const ex of (k.examples || []))
+      examples.push({ ex, k });
+
+  if (!examples.length) return [];
+
+  const allExamples = allKanji.flatMap(k => (k.examples||[]).map(ex => ({ ex, k })));
+
+  return shuffle(examples.map(({ ex, k }) => {
+    const distractors = shuffle(allExamples.filter(e => e.ex.kanji !== ex.kanji)).slice(0, 3);
+
+    if (quizMode === 'kanji-hira') {
+      return {
+        promptText:  ex.kanji,
+        promptSize:  'size-lg',
+        promptLabel: 'Choose the correct reading:',
+        answer:      ex.hiragana,
+        options:     shuffle([ex.hiragana, ...distractors.map(d => d.ex.hiragana)]),
+        revealKanji:   ex.kanji,
+        revealMeaning: k.meaning,
+        revealReading: ex.hiragana,
+        revealExample: ex.english,
+      };
+    } else {
+      return {
+        promptText:  ex.hiragana,
+        promptSize:  'size-lg',
+        promptLabel: 'Choose the correct kanji:',
+        answer:      ex.kanji,
+        options:     shuffle([ex.kanji, ...distractors.map(d => d.ex.kanji)]),
+        revealKanji:   ex.kanji,
+        revealMeaning: k.meaning,
+        revealReading: ex.hiragana,
+        revealExample: ex.english,
+      };
+    }
+  }));
+}
+
+// ── Start / render ────────────────────────────────────────────────────────────
+function startQuiz() {
+  questions = buildQuestions();
+  if (!questions.length) { showToast('No questions available — add examples or change mode', 'error'); return; }
+  qIndex = 0; score = 0; wrongCount = 0; answered = false; history = [];
+  document.getElementById('restart-btn').style.display = '';
+  goStep(3);
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q   = questions[qIndex];
+  const tot = questions.length;
+  answered  = false;
+
+  document.getElementById('q-counter').textContent     = `${qIndex + 1} / ${tot}`;
+  document.getElementById('progress-fill').style.width = `${(qIndex / tot) * 100}%`;
+  document.getElementById('live-correct').textContent  = score;
+  document.getElementById('live-wrong').textContent    = wrongCount;
+
+  const promptEl = document.getElementById('q-prompt');
+  promptEl.textContent = q.promptText;
+  promptEl.className   = `q-prompt ${q.promptSize}`;
+  document.getElementById('q-label').textContent = q.promptLabel;
+
+  // Options
+  document.getElementById('q-options').innerHTML = q.options.map(opt => `
+    <button class="opt-btn" onclick="answer(this, '${CSS.escape(opt)}', '${CSS.escape(q.answer)}')">${opt}</button>
+  `).join('');
+
+  // Hide reveal & nav
+  document.getElementById('answer-reveal').classList.add('hidden');
+  document.getElementById('next-btn').classList.add('hidden');
+  document.getElementById('finish-btn').classList.add('hidden');
+}
+
+// ── Answer ────────────────────────────────────────────────────────────────────
+function answer(btn, chosen, correct) {
+  if (answered) return;
+  answered = true;
+  const isCorrect = chosen === correct;
+  const q = questions[qIndex];
+
+  // Style all buttons
+  document.querySelectorAll('.opt-btn').forEach(b => {
+    b.disabled = true;
+    if (b.textContent === correct)    b.classList.add('correct');
+    else if (b === btn && !isCorrect) b.classList.add('wrong');
+  });
+
+  // Score
+  if (isCorrect) score++; else wrongCount++;
+  document.getElementById('live-correct').textContent = score;
+  document.getElementById('live-wrong').textContent   = wrongCount;
+
+  // History
+  history.push({ q, chosen, isCorrect });
+
+  // Show reveal panel
+  showReveal(q, isCorrect);
+
+  // Show next / finish
+  const isLast = qIndex === questions.length - 1;
+  document.getElementById('next-btn').classList.toggle('hidden', isLast);
+  document.getElementById('finish-btn').classList.toggle('hidden', !isLast);
+}
+
+function showReveal(q, isCorrect) {
+  const panel = document.getElementById('answer-reveal');
+  panel.className = `answer-reveal ${isCorrect ? 'reveal-correct' : 'reveal-wrong'}`;
+
+  document.getElementById('reveal-verdict').textContent  = isCorrect ? '🎉' : '💡';
+  document.getElementById('reveal-kanji').textContent    = q.revealKanji;
+  document.getElementById('reveal-meaning').textContent  = q.revealMeaning;
+  document.getElementById('reveal-reading').textContent  = q.revealReading;
+  document.getElementById('reveal-example').textContent  = q.revealExample;
+
+  const tag = document.getElementById('reveal-tag');
+  tag.textContent  = isCorrect ? 'Correct!' : 'Incorrect';
+  tag.className    = `reveal-tag ${isCorrect ? 'tag-correct' : 'tag-wrong'}`;
+}
+
+function nextQuestion() {
+  qIndex++;
+  renderQuestion();
+}
+
+// ── Results ───────────────────────────────────────────────────────────────────
+function showResults() {
+  // Final progress fill
+  document.getElementById('progress-fill').style.width = '100%';
+
+  const total = questions.length;
+  const pct   = Math.round((score / total) * 100);
+
+  document.getElementById('final-pct').textContent     = `${pct}%`;
+  document.getElementById('final-correct').textContent = score;
+  document.getElementById('final-wrong').textContent   = wrongCount;
+  document.getElementById('final-total').textContent   = total;
+
+  const [verdict, sub] =
+    pct >= 90 ? ['素晴らしい！ Excellent!',    'Outstanding performance — keep it up!'] :
+    pct >= 75 ? ['よくできました！ Well done!', 'Great effort! Review the wrong ones.']  :
+    pct >= 55 ? ['もう少し！ Getting there…',  'Keep studying — you\'re making progress.'] :
+                ['がんばれ！ Keep going!',      'Review the kanji and try again soon.'];
+
+  document.getElementById('final-verdict').textContent = verdict;
+  document.getElementById('final-sub').textContent     = sub;
+
+  // Breakdown table
+  document.getElementById('breakdown-body').innerHTML = history.map((h, i) => `
+    <tr class="${h.isCorrect ? 'row-correct' : 'row-wrong'}">
+      <td style="color:var(--ink-4);font-size:0.75rem">${i + 1}</td>
+      <td class="result-verdict-icon">${h.isCorrect ? '✅' : '❌'}</td>
+      <td class="bd-kanji">${h.q.revealKanji}</td>
+      <td>${h.q.revealMeaning}</td>
+      <td class="bd-hira">${h.q.revealReading}</td>
+      <td style="color:${h.isCorrect ? 'var(--green)' : 'var(--accent)'}">
+        ${h.isCorrect ? h.chosen : `<s style="opacity:.5">${h.chosen}</s> → ${h.q.answer}`}
+      </td>
+    </tr>
+  `).join('');
+
+  document.getElementById('restart-btn').style.display = 'none';
+  goStep('final');
+}
+
+function restart() {
+  document.getElementById('restart-btn').style.display = 'none';
+  goStep(1);
+  renderSelector();
+}
+
+selectMode('meaning');
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,709 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>漢字帳 — Kanji Home</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDMincho:wght@400;700&family=Noto+Sans+JP:wght@300;400;500;700&family=Noto+Serif+JP:wght@400;700;900&display=swap">
+<link rel="stylesheet" href="/css/shared.css">
+<style>
+/* ── Category filter bar ──────────────────────────────────────────────────── */
+.cat-bar { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:24px; align-items:center; }
+.cat-link {
+  padding:5px 14px; border-radius:20px; font-size:.78rem; font-weight:500;
+  cursor:pointer; border:1.5px solid var(--paper-3); background:white; color:var(--ink-3);
+  transition:var(--transition); user-select:none;
+}
+.cat-link:hover { border-color:var(--indigo); color:var(--indigo); }
+.cat-link.active { background:var(--indigo); color:white; border-color:var(--indigo); }
+
+/* ── Kanji grid ───────────────────────────────────────────────────────────── */
+.kanji-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(90px,1fr));
+  gap:10px;
+}
+
+.kanji-cell { position:relative; transition:transform .15s, opacity .15s; }
+
+.kanji-cell.dragging  { opacity:.35; transform:scale(.95); z-index:0; }
+.kanji-cell.drag-over { outline:2.5px dashed var(--indigo); outline-offset:3px; border-radius:var(--radius-sm); background:var(--indigo-l); }
+.kanji-cell.drag-over .kanji-btn { border-color:var(--indigo); }
+
+.drag-handle {
+  position:absolute; top:4px; left:5px; font-size:.6rem; color:var(--ink-4);
+  opacity:0; transition:opacity .15s; pointer-events:none; z-index:4; line-height:1;
+}
+body.drag-mode-on .kanji-cell .drag-handle { opacity:1; }
+body.drag-mode-on .kanji-btn { cursor:grab; }
+body.drag-mode-on .kanji-btn:active { cursor:grabbing; }
+body.drag-mode-on .kanji-btn:hover { border-color:var(--indigo); box-shadow:0 4px 16px rgba(46,74,122,.2); }
+
+.kanji-btn {
+  width:100%; aspect-ratio:1;
+  font-family:'BIZ UDMincho','Noto Serif JP',serif;
+  font-size:2.3rem; font-weight:700;
+  border:1.5px solid var(--paper-3); border-radius:var(--radius-sm);
+  background:white; color:var(--ink); cursor:pointer;
+  transition:all .2s ease; display:flex; align-items:center; justify-content:center;
+  position:relative; overflow:hidden;
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+  font-feature-settings:"kern" 1; line-height:1;
+}
+.kanji-btn:hover {
+  border-color:var(--gold); box-shadow:0 4px 16px rgba(200,146,42,.2);
+  transform:translateY(-2px); z-index:1;
+}
+
+.kanji-cell-actions {
+  position:absolute; top:2px; right:2px; display:flex; gap:2px;
+  opacity:0; transition:opacity .15s; z-index:5;
+}
+.kanji-cell:hover .kanji-cell-actions { opacity:1; }
+
+.cell-action-btn {
+  width:22px; height:22px; border-radius:4px; border:none; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  font-size:.65rem; line-height:1; transition:var(--transition);
+}
+.cell-edit   { background:rgba(46,74,122,.85); color:white; }
+.cell-edit:hover { background:var(--indigo); }
+.cell-delete { background:rgba(200,75,47,.85); color:white; }
+.cell-delete:hover { background:var(--accent); }
+
+.kanji-tooltip {
+  position:absolute; bottom:calc(100% + 8px); left:50%; transform:translateX(-50%);
+  background:var(--ink); color:var(--paper); font-size:.72rem; padding:5px 10px;
+  border-radius:5px; white-space:nowrap; pointer-events:none; opacity:0;
+  transition:opacity .15s; z-index:50; font-style:italic;
+}
+.kanji-tooltip::after {
+  content:''; position:absolute; top:100%; left:50%; transform:translateX(-50%);
+  border:5px solid transparent; border-top-color:var(--ink);
+}
+.kanji-cell:hover .kanji-tooltip { opacity:1; }
+
+.empty-grid { grid-column:1/-1; text-align:center; padding:60px 20px; color:var(--ink-4); }
+.empty-grid-char { font-family:'Noto Serif JP',serif; font-size:4rem; display:block; margin-bottom:12px; color:var(--paper-3); }
+
+/* ── Drag mode toggle button ─────────────────────────────────────────────── */
+.drag-mode-btn {
+  font-size:.78rem; padding:6px 13px; border-radius:var(--radius-sm);
+  border:1.5px solid var(--paper-3); background:white; color:var(--ink-3);
+  cursor:pointer; transition:var(--transition); display:inline-flex; align-items:center; gap:5px;
+  font-family:'Noto Sans JP',sans-serif;
+}
+.drag-mode-btn:hover { border-color:var(--indigo); color:var(--indigo); }
+.drag-mode-btn.active { background:var(--indigo); border-color:var(--indigo); color:white; }
+
+/* ── Quick-add example rows ──────────────────────────────────────────────── */
+.examples-list { display:flex; flex-direction:column; gap:6px; }
+.example-row {
+  display:grid; grid-template-columns:1fr 1fr 1fr auto; gap:6px; align-items:center;
+  background:var(--paper); padding:8px; border-radius:var(--radius-sm); border:1px solid var(--paper-3);
+}
+
+@media (max-width:640px) {
+  .kanji-grid { grid-template-columns:repeat(auto-fill,minmax(76px,1fr)); }
+  .kanji-btn  { font-size:2rem; }
+}
+</style>
+</head>
+<body class="app-wrap">
+
+<header>
+  <a class="logo" href="/">
+    <span class="logo-kanji">漢</span>
+    <span class="logo-text">Kanji Notebook</span>
+  </a>
+  <nav class="site-nav">
+    <a href="/">Home</a>
+    <a href="/examples.html">Examples</a>
+    <a href="/quiz.html">Quiz</a>
+    <a href="/match.html">Match</a>
+  </nav>
+</header>
+
+<main class="page-content">
+  <div class="page-title">
+    <div>
+      <h1>漢字 Kanji</h1>
+      <p class="text-muted" id="kanji-count-label">Loading…</p>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <button class="drag-mode-btn" id="drag-toggle-btn" onclick="toggleDragMode()">⠿ Reorder</button>
+      <button class="btn btn-primary" onclick="openAddModal()">＋ Add Kanji</button>
+    </div>
+  </div>
+
+  <div class="cat-bar" id="cat-bar"></div>
+  <div class="kanji-grid" id="kanji-grid"></div>
+</main>
+
+<!-- ── Add / Edit Modal ───────────────────────────────────────────────────── -->
+<div class="modal-overlay hidden" id="kanji-modal-overlay" onclick="handleOverlayClick(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <h2 id="modal-title">Add Kanji</h2>
+      <button class="btn btn-ghost btn-sm" onclick="closeAddModal()">✕ Close</button>
+    </div>
+    <div class="modal-body">
+      <div class="tab-bar" id="modal-tab-bar">
+        <button class="tab-btn active" data-tab="tab-form">Form</button>
+        <button class="tab-btn" data-tab="tab-quick">Quick Add</button>
+      </div>
+
+      <!-- Form tab -->
+      <div class="tab-panel active" id="tab-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Character <span class="req">*</span></label>
+            <input class="form-control" id="f-char" placeholder="字" style="font-family:'Noto Serif JP',serif;font-size:1.6rem;text-align:center">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Category <span class="req">*</span></label>
+            <select class="form-control" id="f-cat" onchange="handleCatChange()"></select>
+          </div>
+        </div>
+        <div class="form-group hidden" id="f-custom-cat-group">
+          <label class="form-label">New Category Name</label>
+          <input class="form-control" id="f-custom-cat" placeholder="e.g. n3, verbs, custom…">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Meaning <span class="req">*</span></label>
+          <input class="form-control" id="f-meaning" placeholder="e.g. mountain, fire, to study…">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Onyomi <small style="text-transform:none;opacity:.7">(comma-separated)</small></label>
+            <input class="form-control" id="f-onyomi" placeholder="サン, セン">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Kunyomi <small style="text-transform:none;opacity:.7">(comma-separated)</small></label>
+            <input class="form-control" id="f-kunyomi" placeholder="やま  (leave blank if none)">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" style="margin-bottom:8px">Examples</label>
+          <div class="examples-list" id="examples-list"></div>
+          <button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="addExampleRow()">＋ Add Example</button>
+        </div>
+      </div>
+
+      <!-- Quick Add tab -->
+      <div class="tab-panel" id="tab-quick">
+        <p class="text-muted mb-16">One kanji per line. Format:<br>
+        <code style="font-size:.75rem;background:var(--paper-2);padding:3px 8px;border-radius:3px;display:inline-block;margin-top:6px;line-height:1.8">character; meaning; onyomi; kunyomi; category; examples</code><br>
+        <code style="font-size:.75rem;background:var(--paper-2);padding:3px 8px;border-radius:3px;display:inline-block;line-height:1.8">character; meaning; onyomi; ; category; examples</code>
+        <br><small style="opacity:.7;display:block;margin-top:4px">
+          Leave <strong>kunyomi blank</strong> (two semicolons <code>;;</code>) if there is none.<br>
+          Category defaults to "user" if omitted. Onyomi/kunyomi/examples are all optional.<br>
+          Examples format: <code>kanji|hiragana|english, kanji2|hiragana2|english2</code>
+        </small></p>
+        <textarea class="form-control" id="quick-add-text" style="min-height:180px;font-family:monospace;font-size:.82rem"
+          placeholder="茶; tea; チャ, サ; ; n4; お茶|おちゃ|tea, 茶色|ちゃいろ|brown
+日; sun, day; ニチ, ジツ; ひ, か; n5; 今日|きょう|today, 日本|にほん|Japan
+俺; I (masc.); ; おれ; n4; 俺たち|おれたち|we"></textarea>
+        <div id="quick-preview" style="margin-top:12px"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeAddModal()">Cancel</button>
+      <button class="btn btn-primary" id="modal-save-btn" onclick="saveKanji()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Delete confirm ─────────────────────────────────────────────────────── -->
+<div class="modal-overlay hidden" id="delete-confirm-overlay">
+  <div class="modal" style="max-width:400px" onclick="event.stopPropagation()">
+    <div class="modal-header"><h2>Remove Kanji</h2></div>
+    <div class="modal-body">
+      <p>Remove <strong id="delete-char-display" style="font-family:'Noto Serif JP',serif;font-size:1.3rem"></strong> — <span id="delete-meaning-display"></span>?</p>
+      <p class="text-muted" style="margin-top:8px;font-size:.82rem">This action cannot be undone.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('delete-confirm-overlay')">Cancel</button>
+      <button class="btn btn-primary" style="background:var(--accent)" onclick="confirmDelete()">Remove</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+<script src="/js/shared.js"></script>
+<script>
+// ── State ──────────────────────────────────────────────────────────────────────
+let allKanji      = [];
+let categories    = [];
+let activeCategory = 'all';
+let editingChar   = null;
+let deleteTarget  = null;
+let exampleCount  = 0;
+
+// ── Bootstrap ──────────────────────────────────────────────────────────────────
+async function init() {
+  await loadKanji();
+  initTabs('#modal-tab-bar');
+}
+
+async function loadKanji() {
+  try {
+    allKanji   = await api.get('/api/kanji');
+    categories = [...new Set(allKanji.map(k => k.category))].sort();
+    renderCatBar();
+    renderGrid();
+    populateCatDropdown();
+  } catch(e) {
+    showToast('Failed to load kanji', 'error');
+  }
+}
+
+// ── Category bar ───────────────────────────────────────────────────────────────
+function renderCatBar() {
+  const bar = document.getElementById('cat-bar');
+  bar.innerHTML = ['all', ...categories].map(c =>
+    `<span class="cat-link ${c === activeCategory ? 'active' : ''}" onclick="setCategory('${c}')">${c === 'all' ? 'All' : c}</span>`
+  ).join('');
+}
+
+function setCategory(cat) {
+  activeCategory = cat;
+  renderCatBar();
+  renderGrid();
+}
+
+// ── Order helpers (localStorage) ───────────────────────────────────────────────
+function getOrderKey()   { return 'kanji-order-' + activeCategory; }
+function getSavedOrder() { try { return JSON.parse(localStorage.getItem(getOrderKey()) || 'null'); } catch { return null; } }
+function saveOrder(chars){ localStorage.setItem(getOrderKey(), JSON.stringify(chars)); }
+
+function applyOrder(list) {
+  const saved = getSavedOrder();
+  if (!saved || !saved.length) return list;
+  const map     = new Map(list.map(k => [k.character, k]));
+  const ordered = saved.map(c => map.get(c)).filter(Boolean);
+  const inOrder = new Set(saved);
+  list.forEach(k => { if (!inOrder.has(k.character)) ordered.push(k); });
+  return ordered;
+}
+
+// ── Drag state ─────────────────────────────────────────────────────────────────
+let dragModeOn           = false;
+let dragSrcIdx           = null;
+let dragListenersAttached = false;
+
+// ── Render grid ────────────────────────────────────────────────────────────────
+function renderGrid() {
+  const grid     = document.getElementById('kanji-grid');
+  const base     = activeCategory === 'all' ? allKanji : allKanji.filter(k => k.category === activeCategory);
+  const filtered = applyOrder(base);
+  grid._orderedKanji = filtered;
+
+  document.getElementById('kanji-count-label').textContent =
+    filtered.length + ' kanji' + (activeCategory !== 'all' ? ' in ' + activeCategory : ' total');
+
+  if (!filtered.length) {
+    grid.innerHTML = '<div class="empty-grid"><span class="empty-grid-char">無</span><p>No kanji here yet.</p></div>';
+    return;
+  }
+
+  grid.innerHTML = filtered.map((k, i) =>
+    '<div class="kanji-cell" data-idx="' + i + '" data-char="' + encodeURIComponent(k.character) + '">' +
+      '<span class="drag-handle" aria-hidden="true">⠿</span>' +
+      '<button class="kanji-btn" data-action="detail">' + k.character + '</button>' +
+      '<div class="kanji-tooltip">' + k.meaning + '</div>' +
+      '<div class="kanji-cell-actions">' +
+        '<button class="cell-action-btn cell-edit"   data-action="edit"   title="Edit">✏️</button>' +
+        '<button class="cell-action-btn cell-delete" data-action="delete" title="Delete">✖</button>' +
+      '</div>' +
+    '</div>'
+  ).join('');
+
+  if (dragModeOn) grid.querySelectorAll('.kanji-cell').forEach(c => { c.draggable = true; });
+
+  grid.onclick = function(e) {
+    const btn = e.target.closest('[data-action]');
+    if (!btn) return;
+    const cell = btn.closest('.kanji-cell');
+    const char = decodeURIComponent(cell.dataset.char);
+    if      (btn.dataset.action === 'detail') { if (!dragModeOn) goDetail(encodeURIComponent(char)); }
+    else if (btn.dataset.action === 'edit')   { e.stopPropagation(); openEditModal(char); }
+    else if (btn.dataset.action === 'delete') { e.stopPropagation(); openDeleteConfirm(char); }
+  };
+
+  if (!dragListenersAttached) { attachDragListeners(grid); dragListenersAttached = true; }
+}
+
+function goDetail(char) { window.location.href = '/detail.html?k=' + char; }
+
+// ── Drag / drop ────────────────────────────────────────────────────────────────
+function toggleDragMode() {
+  dragModeOn = !dragModeOn;
+  document.body.classList.toggle('drag-mode-on', dragModeOn);
+  const btn = document.getElementById('drag-toggle-btn');
+  btn.classList.toggle('active', dragModeOn);
+  btn.textContent = dragModeOn ? '✓ Done Reordering' : '⠿ Reorder';
+  document.querySelectorAll('.kanji-cell').forEach(c => { c.draggable = dragModeOn; });
+  if (!dragModeOn) {
+    document.querySelectorAll('.drag-over,.dragging').forEach(c => c.classList.remove('drag-over','dragging'));
+    dragSrcIdx = null;
+  }
+}
+
+function attachDragListeners(grid) {
+  grid.addEventListener('dragstart', function(e) {
+    if (!dragModeOn) { e.preventDefault(); return; }
+    const cell = e.target.closest('.kanji-cell');
+    if (!cell) return;
+    dragSrcIdx = parseInt(cell.dataset.idx, 10);
+    setTimeout(() => cell.classList.add('dragging'), 0);
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', String(dragSrcIdx));
+  });
+  grid.addEventListener('dragend', function() {
+    grid.querySelectorAll('.dragging,.drag-over').forEach(c => c.classList.remove('dragging','drag-over'));
+    dragSrcIdx = null;
+  });
+  grid.addEventListener('dragover', function(e) {
+    if (!dragModeOn || dragSrcIdx === null) return;
+    e.preventDefault(); e.dataTransfer.dropEffect = 'move';
+    const cell = e.target.closest('.kanji-cell');
+    if (!cell || parseInt(cell.dataset.idx,10) === dragSrcIdx) return;
+    if (!cell.classList.contains('drag-over')) {
+      grid.querySelectorAll('.drag-over').forEach(c => c.classList.remove('drag-over'));
+      cell.classList.add('drag-over');
+    }
+  });
+  grid.addEventListener('dragleave', function(e) {
+    const cell = e.target.closest('.kanji-cell');
+    if (!cell || cell.contains(e.relatedTarget)) return;
+    cell.classList.remove('drag-over');
+  });
+  grid.addEventListener('drop', function(e) {
+    if (!dragModeOn) return;
+    e.preventDefault();
+    const targetCell = e.target.closest('.kanji-cell');
+    if (!targetCell) return;
+    const targetIdx = parseInt(targetCell.dataset.idx, 10);
+    if (dragSrcIdx === null || dragSrcIdx === targetIdx) return;
+    const current  = (grid._orderedKanji || []).slice();
+    const [moved]  = current.splice(dragSrcIdx, 1);
+    if (!moved) return;
+    current.splice(targetIdx, 0, moved);
+    saveOrder(current.map(k => k.character));
+    renderGrid();
+    showToast('Moved ' + moved.character + ' → position ' + (targetIdx + 1), 'info');
+  });
+}
+
+// ── Touch drag ─────────────────────────────────────────────────────────────────
+(function() {
+  let tSrc=null, tGhost=null, tTimer=null, tLastOver=null;
+  function clearHL() { if(tLastOver){tLastOver.classList.remove('drag-over');tLastOver=null;} }
+  function ghostOf(cell) {
+    const g = cell.cloneNode(true);
+    const r = cell.getBoundingClientRect();
+    g.style.cssText = 'position:fixed;pointer-events:none;z-index:9999;opacity:.88;' +
+      'transform:scale(1.1) rotate(2deg);transition:none;' +
+      'box-shadow:0 16px 40px rgba(0,0,0,.28);border-radius:8px;background:white;' +
+      'width:'+r.width+'px;height:'+r.height+'px;display:flex;align-items:center;justify-content:center;overflow:hidden;';
+    document.body.appendChild(g); return g;
+  }
+  document.addEventListener('touchstart', function(e) {
+    if (!dragModeOn) return;
+    const cell = e.target.closest('.kanji-cell'); if (!cell) return;
+    tTimer = setTimeout(function() {
+      tSrc = cell; dragSrcIdx = parseInt(cell.dataset.idx,10);
+      cell.classList.add('dragging');
+      const touch=e.touches[0]; tGhost=ghostOf(cell);
+      const r=cell.getBoundingClientRect();
+      tGhost.style.left=(touch.clientX-r.width/2)+'px';
+      tGhost.style.top=(touch.clientY-r.height/2)+'px';
+    }, 180);
+  }, {passive:true});
+  document.addEventListener('touchmove', function(e) {
+    if (!tSrc) { clearTimeout(tTimer); return; }
+    e.preventDefault();
+    const touch=e.touches[0];
+    if (tGhost) { tGhost.style.left=(touch.clientX-tGhost.offsetWidth/2)+'px'; tGhost.style.top=(touch.clientY-tGhost.offsetHeight/2-16)+'px'; }
+    if (tGhost) tGhost.style.display='none';
+    const el=document.elementFromPoint(touch.clientX,touch.clientY);
+    if (tGhost) tGhost.style.display='';
+    const overCell = el ? el.closest('.kanji-cell') : null;
+    if (overCell && overCell!==tSrc) { if(overCell!==tLastOver){clearHL();overCell.classList.add('drag-over');tLastOver=overCell;} }
+    else clearHL();
+  }, {passive:false});
+  document.addEventListener('touchend', function(e) {
+    clearTimeout(tTimer);
+    if (tGhost){tGhost.remove();tGhost=null;}
+    if (!tSrc){dragSrcIdx=null;return;}
+    tSrc.classList.remove('dragging');
+    const touch=e.changedTouches[0];
+    const el=document.elementFromPoint(touch.clientX,touch.clientY);
+    const targetCell=el?el.closest('.kanji-cell'):null;
+    clearHL();
+    if (targetCell && targetCell!==tSrc) {
+      const tgtIdx=parseInt(targetCell.dataset.idx,10);
+      const grid=document.getElementById('kanji-grid');
+      const current=(grid._orderedKanji||[]).slice();
+      const [moved]=current.splice(dragSrcIdx,1);
+      if(moved){current.splice(tgtIdx,0,moved);saveOrder(current.map(k=>k.character));renderGrid();showToast('Moved '+moved.character+' → position '+(tgtIdx+1),'info');}
+    }
+    tSrc=null; dragSrcIdx=null;
+  });
+  document.addEventListener('touchcancel', function() {
+    clearTimeout(tTimer);
+    if(tGhost){tGhost.remove();tGhost=null;}
+    if(tSrc){tSrc.classList.remove('dragging');tSrc=null;}
+    clearHL(); dragSrcIdx=null;
+  });
+})();
+
+// ── Modal open / close ─────────────────────────────────────────────────────────
+function openAddModal() {
+  editingChar = null;
+  document.getElementById('modal-title').textContent     = 'Add Kanji';
+  document.getElementById('modal-save-btn').textContent  = 'Add Kanji';
+  clearForm();
+  openModal('kanji-modal-overlay');
+}
+
+function openEditModal(char) {
+  const k = allKanji.find(x => x.character === char);
+  if (!k) return;
+  editingChar = char;
+  document.getElementById('modal-title').textContent    = 'Edit Kanji';
+  document.getElementById('modal-save-btn').textContent = 'Save Changes';
+  fillForm(k);
+  // switch to form tab
+  document.querySelectorAll('#modal-tab-bar .tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelector('[data-tab="tab-form"]').classList.add('active');
+  document.getElementById('tab-form').classList.add('active');
+  openModal('kanji-modal-overlay');
+}
+
+function closeAddModal() { closeModal('kanji-modal-overlay'); editingChar = null; }
+function handleOverlayClick(e) { if (e.target === e.currentTarget) closeAddModal(); }
+
+// ── Form helpers ───────────────────────────────────────────────────────────────
+function clearForm() {
+  ['f-char','f-meaning','f-onyomi','f-kunyomi','f-custom-cat'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
+  document.getElementById('f-custom-cat-group').classList.add('hidden');
+  document.getElementById('examples-list').innerHTML = '';
+  exampleCount = 0;
+  document.getElementById('quick-add-text').value = '';
+  document.getElementById('quick-preview').innerHTML = '';
+  populateCatDropdown();
+}
+
+function fillForm(k) {
+  document.getElementById('f-char').value    = k.character;
+  document.getElementById('f-meaning').value = k.meaning;
+  document.getElementById('f-onyomi').value  = (k.onyomi  || []).join(', ');
+  document.getElementById('f-kunyomi').value = (k.kunyomi || []).join(', ');
+  populateCatDropdown(k.category);
+  document.getElementById('examples-list').innerHTML = '';
+  exampleCount = 0;
+  (k.examples || []).forEach(ex => addExampleRow(ex));
+}
+
+function populateCatDropdown(selected) {
+  const sel  = document.getElementById('f-cat');
+  const cats = [...new Set(['n5','n4','n3','n2','n1','user', ...categories])];
+  sel.innerHTML  = cats.map(c => `<option value="${c}" ${c===(selected||'user')?'selected':''} >${c}</option>`).join('');
+  sel.innerHTML += '<option value="__custom__">Custom…</option>';
+  document.getElementById('f-custom-cat-group').classList.add('hidden');
+}
+
+function handleCatChange() {
+  document.getElementById('f-custom-cat-group').classList.toggle('hidden',
+    document.getElementById('f-cat').value !== '__custom__');
+}
+
+function addExampleRow(data) {
+  data = data || {};
+  const id  = exampleCount++;
+  const row = document.createElement('div');
+  row.className = 'example-row';
+  row.id = 'ex-row-' + id;
+
+  function inp(idSuffix, placeholder, val, extraStyle) {
+    const el = document.createElement('input');
+    el.className   = 'form-control';
+    el.id          = 'ex-' + idSuffix + '-' + id;
+    el.placeholder = placeholder;
+    el.value       = val || '';
+    if (extraStyle) el.style.cssText = extraStyle;
+    return el;
+  }
+
+  const jpEl   = inp('jp',   '漢字',    data.kanji,    'font-family:BIZ UDMincho,\'Noto Serif JP\',serif');
+  const hiraEl = inp('hira', 'Hiragana', data.hiragana, 'font-family:BIZ UDMincho,\'Noto Serif JP\',serif;font-size:.85rem');
+  const enEl   = inp('en',   'English',  data.english,  'font-size:.85rem');
+
+  const delBtn = document.createElement('button');
+  delBtn.type      = 'button';
+  delBtn.className = 'btn btn-ghost btn-icon btn-sm';
+  delBtn.textContent = '✕';
+  delBtn.onclick   = function() { row.remove(); };
+
+  row.appendChild(jpEl);
+  row.appendChild(hiraEl);
+  row.appendChild(enEl);
+  row.appendChild(delBtn);
+  document.getElementById('examples-list').appendChild(row);
+}
+
+function getExamples() {
+  return [...document.querySelectorAll('[id^="ex-row-"]')].map(function(row) {
+    const id = row.id.replace('ex-row-', '');
+    return {
+      kanji:    (document.getElementById('ex-jp-'   + id) || {value:''}).value.trim(),
+      hiragana: (document.getElementById('ex-hira-' + id) || {value:''}).value.trim(),
+      english:  (document.getElementById('ex-en-'   + id) || {value:''}).value.trim(),
+    };
+  }).filter(function(e) { return e.kanji; });
+}
+
+// ── Save (form tab) ────────────────────────────────────────────────────────────
+async function saveKanji() {
+  const activeTabEl = document.querySelector('#modal-tab-bar .tab-btn.active');
+  if (activeTabEl?.dataset.tab === 'tab-quick') { await quickAddSave(); return; }
+
+  const char    = document.getElementById('f-char').value.trim();
+  const meaning = document.getElementById('f-meaning').value.trim();
+  const catSel  = document.getElementById('f-cat').value;
+  const category = catSel === '__custom__'
+    ? document.getElementById('f-custom-cat').value.trim().toLowerCase().replace(/\s+/g,'_')
+    : catSel;
+
+  if (!char || !meaning) { showToast('Character and meaning are required', 'error'); return; }
+  if (!category)         { showToast('Category is required', 'error');              return; }
+
+  const payload = {
+    character: char, meaning,
+    onyomi:   document.getElementById('f-onyomi').value.split(',').map(s=>s.trim()).filter(Boolean),
+    kunyomi:  document.getElementById('f-kunyomi').value.split(',').map(s=>s.trim()).filter(Boolean),
+    examples: getExamples(),
+    category,
+  };
+
+  try {
+    if (editingChar) {
+      await api.put('/api/kanji/' + encodeURIComponent(editingChar), payload);
+      showToast('Updated ' + char, 'success');
+    } else {
+      await api.post('/api/kanji', payload);
+      showToast('Added ' + char, 'success');
+    }
+    closeAddModal();
+    await loadKanji();
+  } catch(e) {
+    showToast(e?.error || 'Save failed', 'error');
+  }
+}
+
+// ── Quick Add parser (fixed: handles missing kunyomi correctly) ────────────────
+async function quickAddSave() {
+  const lines = document.getElementById('quick-add-text').value.trim().split('\n').filter(l => l.trim());
+  if (!lines.length) { showToast('Nothing to add', 'error'); return; }
+
+  // Known category names — used to detect when field 4 was skipped
+  const knownCats = new Set(['n1','n2','n3','n4','n5','user', ...categories]);
+
+  let added = 0, failed = 0, errors = [];
+
+  for (const line of lines) {
+    // Split on semicolons — allow up to 6 fields
+    const raw = line.split(';');
+
+    const char    = (raw[0] || '').trim();
+    const meaning = (raw[1] || '').trim();
+    if (!char || !meaning) { failed++; errors.push('Missing char/meaning: ' + line.slice(0,30)); continue; }
+
+    const onyomiRaw   = (raw[2] || '').trim();
+
+    // ── Field 3 is kunyomi — it may be intentionally blank (two semicolons ;;)
+    // Detect accidental category in the kunyomi slot:
+    // if field[3] looks like a known category AND field[4] is empty/missing, shift left.
+    let kunyomiRaw = (raw[3] || '').trim();
+    let catRaw     = (raw[4] || '').trim();
+    let exRaw      = (raw[5] || '').trim();
+
+    // Auto-detect missing kunyomi: field[3] is a known category name (not a reading)
+    // Handles: 'char; meaning; onyomi; n4; examples'  (kunyomi omitted)
+    // vs.      'char; meaning; onyomi; ひ; n4; examples' (kunyomi present)
+    // A field is a category if it matches a known cat name AND contains no Japanese chars
+    const looksLikeCat = function(s) {
+      return s && knownCats.has(s.toLowerCase()) && !/[぀-ヿ一-鿿]/.test(s);
+    };
+    if (looksLikeCat(kunyomiRaw)) {
+      // kunyomi slot is actually a category — shift everything left by one
+      exRaw      = catRaw + (exRaw ? ', ' + exRaw : '');
+      // But wait: raw[4] was catRaw, raw[5] was exRaw
+      // If kunyomi slot = category, then raw[4] = examples (not cat)
+      exRaw      = (raw[4] || '').trim();
+      catRaw     = kunyomiRaw;
+      kunyomiRaw = '';
+    }
+
+    const category = catRaw.toLowerCase().replace(/\s+/g,'_') || 'user';
+
+    const examples = exRaw ? exRaw.split(',').map(e => {
+      const parts = e.trim().split('|');
+      return parts[0] ? { kanji: parts[0].trim(), hiragana: (parts[1]||''). trim(), english: (parts[2]||''). trim() } : null;
+    }).filter(Boolean) : [];
+
+    try {
+      await api.post('/api/kanji', {
+        character: char, meaning,
+        onyomi:  onyomiRaw  ? onyomiRaw.split(',').map(s=>s.trim()).filter(Boolean)  : [],
+        kunyomi: kunyomiRaw ? kunyomiRaw.split(',').map(s=>s.trim()).filter(Boolean) : [],
+        category, examples,
+      });
+      added++;
+    } catch(e) {
+      failed++;
+      errors.push((e?.error || 'Error') + ' (' + char + ')');
+    }
+  }
+
+  if (errors.length) errors.forEach(err => console.warn('Quick Add:', err));
+  showToast('Added ' + added + (failed ? ', ' + failed + ' failed' : ''), added ? 'success' : 'error');
+  closeAddModal();
+  await loadKanji();
+}
+
+// ── Delete ─────────────────────────────────────────────────────────────────────
+function openDeleteConfirm(char) {
+  const k = allKanji.find(x => x.character === char);
+  if (!k) return;
+  deleteTarget = char;
+  document.getElementById('delete-char-display').textContent   = char;
+  document.getElementById('delete-meaning-display').textContent = k.meaning;
+  openModal('delete-confirm-overlay');
+}
+
+async function confirmDelete() {
+  if (!deleteTarget) return;
+  try {
+    await api.delete('/api/kanji/' + encodeURIComponent(deleteTarget));
+    showToast('Removed ' + deleteTarget, 'info');
+    closeModal('delete-confirm-overlay');
+    deleteTarget = null;
+    await loadKanji();
+  } catch(e) {
+    showToast(e?.error || 'Delete failed', 'error');
+  }
+}
+
+init();
+</script>
+</body>
+</html>
+

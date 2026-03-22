@@ -1,0 +1,3398 @@
+[
+  {
+    "character": "朝",
+    "meaning": "morning",
+    "onyomi": [
+      "チョウ"
+    ],
+    "kunyomi": [
+      "あさ"
+    ],
+    "examples": [
+      {
+        "kanji": "朝",
+        "hiragana": "あさ",
+        "english": "morning"
+      },
+      {
+        "kanji": "朝ごはん",
+        "hiragana": "あさごはん",
+        "english": "breakfast"
+      }
+    ]
+  },
+  {
+    "character": "昼",
+    "meaning": "daytime",
+    "onyomi": [
+      "チュウ"
+    ],
+    "kunyomi": [
+      "ひる"
+    ],
+    "examples": [
+      {
+        "kanji": "昼",
+        "hiragana": "ひる",
+        "english": "daytime"
+      },
+      {
+        "kanji": "昼ごはん",
+        "hiragana": "ひるごはん",
+        "english": "lunch"
+      }
+    ]
+  },
+  {
+    "character": "夜",
+    "meaning": "night",
+    "onyomi": [
+      "ヤ"
+    ],
+    "kunyomi": [
+      "よる"
+    ],
+    "examples": [
+      {
+        "kanji": "夜",
+        "hiragana": "よる",
+        "english": "night"
+      },
+      {
+        "kanji": "今夜",
+        "hiragana": "こんや",
+        "english": "tonight"
+      }
+    ]
+  },
+  {
+    "character": "東",
+    "meaning": "east",
+    "onyomi": [
+      "トウ"
+    ],
+    "kunyomi": [
+      "ひがし"
+    ],
+    "examples": [
+      {
+        "kanji": "東",
+        "hiragana": "ひがし",
+        "english": "east"
+      },
+      {
+        "kanji": "東京",
+        "hiragana": "とうきょう",
+        "english": "Tokyo"
+      }
+    ]
+  },
+  {
+    "character": "西",
+    "meaning": "west",
+    "onyomi": [
+      "セイ",
+      "サイ"
+    ],
+    "kunyomi": [
+      "にし"
+    ],
+    "examples": [
+      {
+        "kanji": "西",
+        "hiragana": "にし",
+        "english": "west"
+      },
+      {
+        "kanji": "西日本",
+        "hiragana": "にしにほん",
+        "english": "western Japan"
+      }
+    ]
+  },
+  {
+    "character": "南",
+    "meaning": "south",
+    "onyomi": [
+      "ナン"
+    ],
+    "kunyomi": [
+      "みなみ"
+    ],
+    "examples": [
+      {
+        "kanji": "南",
+        "hiragana": "みなみ",
+        "english": "south"
+      },
+      {
+        "kanji": "南国",
+        "hiragana": "なんごく",
+        "english": "southern country"
+      }
+    ]
+  },
+  {
+    "character": "北",
+    "meaning": "north",
+    "onyomi": [
+      "ホク"
+    ],
+    "kunyomi": [
+      "きた"
+    ],
+    "examples": [
+      {
+        "kanji": "北",
+        "hiragana": "きた",
+        "english": "north"
+      },
+      {
+        "kanji": "北海道",
+        "hiragana": "ほっかいどう",
+        "english": "Hokkaido"
+      }
+    ]
+  },
+  {
+    "character": "父",
+    "meaning": "father",
+    "onyomi": [
+      "フ"
+    ],
+    "kunyomi": [
+      "ちち"
+    ],
+    "examples": [
+      {
+        "kanji": "父",
+        "hiragana": "ちち",
+        "english": "father"
+      },
+      {
+        "kanji": "父親",
+        "hiragana": "ちちおや",
+        "english": "father"
+      }
+    ]
+  },
+  {
+    "character": "母",
+    "meaning": "mother",
+    "onyomi": [
+      "ボ"
+    ],
+    "kunyomi": [
+      "はは"
+    ],
+    "examples": [
+      {
+        "kanji": "母",
+        "hiragana": "はは",
+        "english": "mother"
+      },
+      {
+        "kanji": "母親",
+        "hiragana": "ははおや",
+        "english": "mother"
+      }
+    ]
+  },
+  {
+    "character": "姉",
+    "meaning": "older sister",
+    "onyomi": [
+      "シ"
+    ],
+    "kunyomi": [
+      "あね"
+    ],
+    "examples": [
+      {
+        "kanji": "姉",
+        "hiragana": "あね",
+        "english": "older sister"
+      },
+      {
+        "kanji": "お姉さん",
+        "hiragana": "おねえさん",
+        "english": "older sister"
+      }
+    ]
+  },
+  {
+    "character": "妹",
+    "meaning": "younger sister",
+    "onyomi": [
+      "マイ"
+    ],
+    "kunyomi": [
+      "いもうと"
+    ],
+    "examples": [
+      {
+        "kanji": "妹",
+        "hiragana": "いもうと",
+        "english": "younger sister"
+      },
+      {
+        "kanji": "妹さん",
+        "hiragana": "いもうとさん",
+        "english": "younger sister"
+      }
+    ]
+  },
+  {
+    "character": "兄",
+    "meaning": "older brother",
+    "onyomi": [
+      "ケイ",
+      "キョウ"
+    ],
+    "kunyomi": [
+      "あに"
+    ],
+    "examples": [
+      {
+        "kanji": "兄",
+        "hiragana": "あに",
+        "english": "older brother"
+      },
+      {
+        "kanji": "お兄さん",
+        "hiragana": "おにいさん",
+        "english": "older brother"
+      }
+    ]
+  },
+  {
+    "character": "弟",
+    "meaning": "younger brother",
+    "onyomi": [
+      "テイ",
+      "ダイ"
+    ],
+    "kunyomi": [
+      "おとうと"
+    ],
+    "examples": [
+      {
+        "kanji": "弟",
+        "hiragana": "おとうと",
+        "english": "younger brother"
+      },
+      {
+        "kanji": "弟さん",
+        "hiragana": "おとうとさん",
+        "english": "younger brother"
+      }
+    ]
+  },
+  {
+    "character": "春",
+    "meaning": "spring",
+    "onyomi": [
+      "シュン"
+    ],
+    "kunyomi": [
+      "はる"
+    ],
+    "examples": [
+      {
+        "kanji": "春",
+        "hiragana": "はる",
+        "english": "spring"
+      },
+      {
+        "kanji": "春休み",
+        "hiragana": "はるやすみ",
+        "english": "spring break"
+      }
+    ]
+  },
+  {
+    "character": "夏",
+    "meaning": "summer",
+    "onyomi": [
+      "カ"
+    ],
+    "kunyomi": [
+      "なつ"
+    ],
+    "examples": [
+      {
+        "kanji": "夏",
+        "hiragana": "なつ",
+        "english": "summer"
+      },
+      {
+        "kanji": "夏休み",
+        "hiragana": "なつやすみ",
+        "english": "summer break"
+      }
+    ]
+  },
+  {
+    "character": "秋",
+    "meaning": "autumn",
+    "onyomi": [
+      "シュウ"
+    ],
+    "kunyomi": [
+      "あき"
+    ],
+    "examples": [
+      {
+        "kanji": "秋",
+        "hiragana": "あき",
+        "english": "autumn"
+      },
+      {
+        "kanji": "秋風",
+        "hiragana": "あきかぜ",
+        "english": "autumn wind"
+      }
+    ]
+  },
+  {
+    "character": "冬",
+    "meaning": "winter",
+    "onyomi": [
+      "トウ"
+    ],
+    "kunyomi": [
+      "ふゆ"
+    ],
+    "examples": [
+      {
+        "kanji": "冬",
+        "hiragana": "ふゆ",
+        "english": "winter"
+      },
+      {
+        "kanji": "冬休み",
+        "hiragana": "ふゆやすみ",
+        "english": "winter break"
+      }
+    ]
+  },
+  {
+    "character": "何",
+    "meaning": "what",
+    "onyomi": [
+      "カ"
+    ],
+    "kunyomi": [
+      "なに",
+      "なん"
+    ],
+    "examples": [
+      {
+        "kanji": "何",
+        "hiragana": "なに",
+        "english": "what"
+      },
+      {
+        "kanji": "何時",
+        "hiragana": "なんじ",
+        "english": "what time"
+      }
+    ]
+  },
+  {
+    "character": "作",
+    "meaning": "make",
+    "onyomi": [
+      "サク",
+      "サ"
+    ],
+    "kunyomi": [
+      "つくる"
+    ],
+    "examples": [
+      {
+        "kanji": "作る",
+        "hiragana": "つくる",
+        "english": "to make"
+      },
+      {
+        "kanji": "作品",
+        "hiragana": "さくひん",
+        "english": "work"
+      }
+    ]
+  },
+  {
+    "character": "体",
+    "meaning": "body",
+    "onyomi": [
+      "タイ"
+    ],
+    "kunyomi": [
+      "からだ"
+    ],
+    "examples": [
+      {
+        "kanji": "体",
+        "hiragana": "からだ",
+        "english": "body"
+      },
+      {
+        "kanji": "体育",
+        "hiragana": "たいいく",
+        "english": "physical education"
+      }
+    ]
+  },
+  {
+    "character": "行",
+    "meaning": "go",
+    "onyomi": [
+      "コウ",
+      "ギョウ"
+    ],
+    "kunyomi": [
+      "いく",
+      "ゆく"
+    ],
+    "examples": [
+      {
+        "kanji": "行く",
+        "hiragana": "いく",
+        "english": "to go"
+      },
+      {
+        "kanji": "旅行",
+        "hiragana": "りょこう",
+        "english": "travel"
+      }
+    ]
+  },
+  {
+    "character": "後",
+    "meaning": "after",
+    "onyomi": [
+      "ゴ",
+      "コウ"
+    ],
+    "kunyomi": [
+      "あと",
+      "うしろ"
+    ],
+    "examples": [
+      {
+        "kanji": "後",
+        "hiragana": "あと",
+        "english": "after"
+      },
+      {
+        "kanji": "午後",
+        "hiragana": "ごご",
+        "english": "afternoon"
+      }
+    ]
+  },
+  {
+    "character": "来",
+    "meaning": "come",
+    "onyomi": [
+      "ライ"
+    ],
+    "kunyomi": [
+      "くる"
+    ],
+    "examples": [
+      {
+        "kanji": "来る",
+        "hiragana": "くる",
+        "english": "to come"
+      },
+      {
+        "kanji": "来月",
+        "hiragana": "らいげつ",
+        "english": "next month"
+      }
+    ]
+  },
+  {
+    "character": "楽",
+    "meaning": "comfortable",
+    "onyomi": [
+      "ガク",
+      "ラク"
+    ],
+    "kunyomi": [
+      "たのしい"
+    ],
+    "examples": [
+      {
+        "kanji": "楽しい",
+        "hiragana": "たのしい",
+        "english": "enjoyable"
+      },
+      {
+        "kanji": "音楽",
+        "hiragana": "おんがく",
+        "english": "music"
+      }
+    ]
+  },
+  {
+    "character": "弓",
+    "meaning": "bow",
+    "onyomi": [
+      "キュウ"
+    ],
+    "kunyomi": [
+      "ゆみ"
+    ],
+    "examples": [
+      {
+        "kanji": "弓",
+        "hiragana": "ゆみ",
+        "english": "bow"
+      },
+      {
+        "kanji": "弓道",
+        "hiragana": "きゅうどう",
+        "english": "archery"
+      }
+    ]
+  },
+  {
+    "character": "引",
+    "meaning": "pull",
+    "onyomi": [
+      "イン"
+    ],
+    "kunyomi": [
+      "ひく"
+    ],
+    "examples": [
+      {
+        "kanji": "引く",
+        "hiragana": "ひく",
+        "english": "to pull"
+      },
+      {
+        "kanji": "引力",
+        "hiragana": "いんりょく",
+        "english": "gravity"
+      }
+    ]
+  },
+  {
+    "character": "羽",
+    "meaning": "wing",
+    "onyomi": [
+      "ウ"
+    ],
+    "kunyomi": [
+      "は",
+      "わ"
+    ],
+    "examples": [
+      {
+        "kanji": "羽",
+        "hiragana": "はね",
+        "english": "wing"
+      },
+      {
+        "kanji": "羽根",
+        "hiragana": "はね",
+        "english": "feather"
+      }
+    ]
+  },
+  {
+    "character": "強",
+    "meaning": "strong",
+    "onyomi": [
+      "キョウ"
+    ],
+    "kunyomi": [
+      "つよい"
+    ],
+    "examples": [
+      {
+        "kanji": "強い",
+        "hiragana": "つよい",
+        "english": "strong"
+      },
+      {
+        "kanji": "勉強",
+        "hiragana": "べんきょう",
+        "english": "study"
+      }
+    ]
+  },
+  {
+    "character": "弱",
+    "meaning": "weak",
+    "onyomi": [
+      "ジャク"
+    ],
+    "kunyomi": [
+      "よわい"
+    ],
+    "examples": [
+      {
+        "kanji": "弱い",
+        "hiragana": "よわい",
+        "english": "weak"
+      },
+      {
+        "kanji": "弱音",
+        "hiragana": "よわね",
+        "english": "complaint"
+      }
+    ]
+  },
+  {
+    "character": "電",
+    "meaning": "electricity",
+    "onyomi": [
+      "デン"
+    ],
+    "kunyomi": [],
+    "examples": [
+      {
+        "kanji": "電車",
+        "hiragana": "でんしゃ",
+        "english": "train"
+      },
+      {
+        "kanji": "電気",
+        "hiragana": "でんき",
+        "english": "electricity"
+      }
+    ]
+  },
+  {
+    "character": "雲",
+    "meaning": "cloud",
+    "onyomi": [
+      "ウン"
+    ],
+    "kunyomi": [
+      "くも"
+    ],
+    "examples": [
+      {
+        "kanji": "雲",
+        "hiragana": "くも",
+        "english": "cloud"
+      },
+      {
+        "kanji": "雲行き",
+        "hiragana": "くもゆき",
+        "english": "weather trend"
+      }
+    ]
+  },
+  {
+    "character": "雪",
+    "meaning": "snow",
+    "onyomi": [
+      "セツ"
+    ],
+    "kunyomi": [
+      "ゆき"
+    ],
+    "examples": [
+      {
+        "kanji": "雪",
+        "hiragana": "ゆき",
+        "english": "snow"
+      },
+      {
+        "kanji": "大雪",
+        "hiragana": "おおゆき",
+        "english": "heavy snow"
+      }
+    ]
+  },
+  {
+    "character": "当",
+    "meaning": "win, hit",
+    "onyomi": [
+      "トウ"
+    ],
+    "kunyomi": [
+      "あたる"
+    ],
+    "examples": [
+      {
+        "kanji": "当たる",
+        "hiragana": "あたる",
+        "english": "to hit"
+      },
+      {
+        "kanji": "当然",
+        "hiragana": "とうぜん",
+        "english": "natural"
+      }
+    ]
+  },
+  {
+    "character": "心",
+    "meaning": "heart",
+    "onyomi": [
+      "シン"
+    ],
+    "kunyomi": [
+      "こころ"
+    ],
+    "examples": [
+      {
+        "kanji": "心",
+        "hiragana": "こころ",
+        "english": "heart"
+      },
+      {
+        "kanji": "心配",
+        "hiragana": "しんぱい",
+        "english": "worry"
+      }
+    ]
+  },
+  {
+    "character": "思",
+    "meaning": "think",
+    "onyomi": [
+      "シ"
+    ],
+    "kunyomi": [
+      "おもう"
+    ],
+    "examples": [
+      {
+        "kanji": "思う",
+        "hiragana": "おもう",
+        "english": "to think"
+      },
+      {
+        "kanji": "思想",
+        "hiragana": "しそう",
+        "english": "thought"
+      }
+    ]
+  },
+  {
+    "character": "家",
+    "meaning": "house",
+    "onyomi": [
+      "カ",
+      "ケ"
+    ],
+    "kunyomi": [
+      "いえ",
+      "うち"
+    ],
+    "examples": [
+      {
+        "kanji": "家",
+        "hiragana": "いえ",
+        "english": "house"
+      },
+      {
+        "kanji": "家族",
+        "hiragana": "かぞく",
+        "english": "family"
+      }
+    ]
+  },
+  {
+    "character": "室",
+    "meaning": "room",
+    "onyomi": [
+      "シツ"
+    ],
+    "kunyomi": [
+      "むろ"
+    ],
+    "examples": [
+      {
+        "kanji": "教室",
+        "hiragana": "きょうしつ",
+        "english": "classroom"
+      },
+      {
+        "kanji": "部屋",
+        "hiragana": "へや",
+        "english": "room"
+      }
+    ]
+  },
+  {
+    "character": "茶",
+    "meaning": "tea",
+    "onyomi": [
+      "チャ",
+      "サ"
+    ],
+    "kunyomi": [],
+    "examples": [
+      {
+        "kanji": "お茶",
+        "hiragana": "おちゃ",
+        "english": "tea"
+      },
+      {
+        "kanji": "茶色",
+        "hiragana": "ちゃいろ",
+        "english": "brown"
+      }
+    ]
+  },
+  {
+    "character": "算",
+    "meaning": "calculate",
+    "onyomi": [
+      "サン"
+    ],
+    "kunyomi": [],
+    "examples": [
+      {
+        "kanji": "計算",
+        "hiragana": "けいさん",
+        "english": "calculation"
+      },
+      {
+        "kanji": "算数",
+        "hiragana": "さんすう",
+        "english": "arithmetic"
+      }
+    ]
+  },
+  {
+    "character": "答",
+    "meaning": "answer",
+    "onyomi": [
+      "トウ"
+    ],
+    "kunyomi": [
+      "こたえる"
+    ],
+    "examples": [
+      {
+        "kanji": "答える",
+        "hiragana": "こたえる",
+        "english": "to answer"
+      },
+      {
+        "kanji": "回答",
+        "hiragana": "かいとう",
+        "english": "reply"
+      }
+    ]
+  },
+  {
+    "character": "海",
+    "meaning": "sea",
+    "onyomi": [
+      "カイ"
+    ],
+    "kunyomi": [
+      "うみ"
+    ],
+    "examples": [
+      {
+        "kanji": "海",
+        "hiragana": "うみ",
+        "english": "sea"
+      },
+      {
+        "kanji": "海水",
+        "hiragana": "かいすい",
+        "english": "seawater"
+      }
+    ]
+  },
+  {
+    "character": "活",
+    "meaning": "active",
+    "onyomi": [
+      "カツ"
+    ],
+    "kunyomi": [
+      "いきる"
+    ],
+    "examples": [
+      {
+        "kanji": "活動",
+        "hiragana": "かつどう",
+        "english": "activity"
+      },
+      {
+        "kanji": "生活",
+        "hiragana": "せいかつ",
+        "english": "life"
+      }
+    ]
+  },
+  {
+    "character": "池",
+    "meaning": "pond",
+    "onyomi": [
+      "チ"
+    ],
+    "kunyomi": [
+      "いけ"
+    ],
+    "examples": [
+      {
+        "kanji": "池",
+        "hiragana": "いけ",
+        "english": "pond"
+      },
+      {
+        "kanji": "電池",
+        "hiragana": "でんち",
+        "english": "battery"
+      }
+    ]
+  },
+  {
+    "character": "汽",
+    "meaning": "steam",
+    "onyomi": [
+      "キ"
+    ],
+    "kunyomi": [],
+    "examples": [
+      {
+        "kanji": "汽車",
+        "hiragana": "きしゃ",
+        "english": "steam train"
+      },
+      {
+        "kanji": "汽笛",
+        "hiragana": "きてき",
+        "english": "steam whistle"
+      }
+    ]
+  },
+  {
+    "character": "道",
+    "meaning": "road",
+    "onyomi": [
+      "ドウ"
+    ],
+    "kunyomi": [
+      "みち"
+    ],
+    "examples": [
+      {
+        "kanji": "道",
+        "hiragana": "みち",
+        "english": "road"
+      },
+      {
+        "kanji": "道路",
+        "hiragana": "どうろ",
+        "english": "road"
+      }
+    ]
+  },
+  {
+    "character": "遠",
+    "meaning": "far",
+    "onyomi": [
+      "エン"
+    ],
+    "kunyomi": [
+      "とおい"
+    ],
+    "examples": [
+      {
+        "kanji": "遠い",
+        "hiragana": "とおい",
+        "english": "far"
+      },
+      {
+        "kanji": "遠足",
+        "hiragana": "えんそく",
+        "english": "excursion"
+      }
+    ]
+  },
+  {
+    "character": "近",
+    "meaning": "near",
+    "onyomi": [
+      "キン"
+    ],
+    "kunyomi": [
+      "ちかい"
+    ],
+    "examples": [
+      {
+        "kanji": "近い",
+        "hiragana": "ちかい",
+        "english": "near"
+      },
+      {
+        "kanji": "最近",
+        "hiragana": "さいきん",
+        "english": "recently"
+      }
+    ]
+  },
+  {
+    "character": "週",
+    "meaning": "week",
+    "onyomi": [
+      "シュウ"
+    ],
+    "kunyomi": [],
+    "examples": [
+      {
+        "kanji": "週末",
+        "hiragana": "しゅうまつ",
+        "english": "weekend"
+      },
+      {
+        "kanji": "今週",
+        "hiragana": "こんしゅう",
+        "english": "this week"
+      }
+    ]
+  },
+  {
+    "character": "通",
+    "meaning": "commute",
+    "onyomi": [
+      "ツウ"
+    ],
+    "kunyomi": [
+      "とおる"
+    ],
+    "examples": [
+      {
+        "kanji": "通う",
+        "hiragana": "かよう",
+        "english": "to commute"
+      },
+      {
+        "kanji": "普通",
+        "hiragana": "ふつう",
+        "english": "normal"
+      }
+    ]
+  },
+  {
+    "character": "走",
+    "meaning": "run",
+    "onyomi": [
+      "ソウ"
+    ],
+    "kunyomi": [
+      "はしる"
+    ],
+    "examples": [
+      {
+        "kanji": "走る",
+        "hiragana": "はしる",
+        "english": "to run"
+      },
+      {
+        "kanji": "競走",
+        "hiragana": "きょうそう",
+        "english": "race"
+      }
+    ]
+  },
+  {
+    "character": "地",
+    "meaning": "ground",
+    "onyomi": [
+      "チ",
+      "ジ"
+    ],
+    "kunyomi": [],
+    "examples": [
+      {
+        "kanji": "地図",
+        "hiragana": "ちず",
+        "english": "map"
+      },
+      {
+        "kanji": "地球",
+        "hiragana": "ちきゅう",
+        "english": "earth"
+      }
+    ]
+  },
+  {
+    "character": "場",
+    "meaning": "place",
+    "onyomi": [
+      "ジョウ"
+    ],
+    "kunyomi": [
+      "ば"
+    ],
+    "examples": [
+      {
+        "kanji": "場所",
+        "hiragana": "ばしょ",
+        "english": "place"
+      },
+      {
+        "kanji": "場合",
+        "hiragana": "ばあい",
+        "english": "case"
+      }
+    ]
+  },
+  {
+    "character": "門",
+    "meaning": "gate",
+    "onyomi": [
+      "モン"
+    ],
+    "kunyomi": [
+      "かど"
+    ],
+    "examples": [
+      {
+        "kanji": "門",
+        "hiragana": "かど",
+        "english": "gate"
+      },
+      {
+        "kanji": "専門",
+        "hiragana": "せんもん",
+        "english": "specialty"
+      }
+    ]
+  },
+  {
+    "character": "間",
+    "meaning": "interval",
+    "onyomi": [
+      "カン",
+      "ケン"
+    ],
+    "kunyomi": [
+      "あいだ",
+      "ま"
+    ],
+    "examples": [
+      {
+        "kanji": "時間",
+        "hiragana": "じかん",
+        "english": "time"
+      },
+      {
+        "kanji": "間",
+        "hiragana": "あいだ",
+        "english": "between"
+      }
+    ]
+  },
+  {
+    "character": "聞",
+    "meaning": "hear",
+    "onyomi": [
+      "ブン",
+      "モン"
+    ],
+    "kunyomi": [
+      "きく"
+    ],
+    "examples": [
+      {
+        "kanji": "聞く",
+        "hiragana": "きく",
+        "english": "to hear"
+      },
+      {
+        "kanji": "新聞",
+        "hiragana": "しんぶん",
+        "english": "newspaper"
+      }
+    ]
+  },
+  {
+    "character": "同",
+    "meaning": "same",
+    "onyomi": [
+      "ドウ"
+    ],
+    "kunyomi": [
+      "おなじ"
+    ],
+    "examples": [
+      {
+        "kanji": "同じ",
+        "hiragana": "おなじ",
+        "english": "same"
+      },
+      {
+        "kanji": "同時",
+        "hiragana": "どうじ",
+        "english": "simultaneous"
+      }
+    ]
+  },
+  {
+    "character": "内",
+    "meaning": "inside",
+    "onyomi": [
+      "ナイ"
+    ],
+    "kunyomi": [
+      "うち"
+    ],
+    "examples": [
+      {
+        "kanji": "内",
+        "hiragana": "うち",
+        "english": "inside"
+      },
+      {
+        "kanji": "内側",
+        "hiragana": "うちがわ",
+        "english": "inner side"
+      }
+    ]
+  },
+  {
+    "character": "肉",
+    "meaning": "meat",
+    "onyomi": [
+      "ニク"
+    ],
+    "kunyomi": [],
+    "examples": [
+      {
+        "kanji": "肉",
+        "hiragana": "にく",
+        "english": "meat"
+      },
+      {
+        "kanji": "牛肉",
+        "hiragana": "ぎゅうにく",
+        "english": "beef"
+      }
+    ]
+  },
+  {
+    "character": "岩",
+    "meaning": "rock",
+    "onyomi": [
+      "ガン"
+    ],
+    "kunyomi": [
+      "いわ"
+    ],
+    "examples": [
+      {
+        "kanji": "岩",
+        "hiragana": "いわ",
+        "english": "rock"
+      },
+      {
+        "kanji": "岩石",
+        "hiragana": "がんせき",
+        "english": "rock"
+      }
+    ]
+  },
+  {
+    "character": "言",
+    "meaning": "say",
+    "onyomi": [
+      "ゲン",
+      "ゴン"
+    ],
+    "kunyomi": [
+      "いう",
+      "こと"
+    ],
+    "examples": [
+      {
+        "kanji": "言う",
+        "hiragana": "いう",
+        "english": "to say"
+      },
+      {
+        "kanji": "言葉",
+        "hiragana": "ことば",
+        "english": "word"
+      }
+    ]
+  },
+  {
+    "character": "記",
+    "meaning": "write",
+    "onyomi": [
+      "キ"
+    ],
+    "kunyomi": [
+      "しるす"
+    ],
+    "examples": [
+      {
+        "kanji": "記録",
+        "hiragana": "きろく",
+        "english": "record"
+      },
+      {
+        "kanji": "日記",
+        "hiragana": "にっき",
+        "english": "diary"
+      }
+    ]
+  },
+  {
+    "character": "計",
+    "meaning": "measure",
+    "onyomi": [
+      "ケイ"
+    ],
+    "kunyomi": [
+      "はかる"
+    ],
+    "examples": [
+      {
+        "kanji": "計画",
+        "hiragana": "けいかく",
+        "english": "plan"
+      },
+      {
+        "kanji": "時計",
+        "hiragana": "とけい",
+        "english": "clock"
+      }
+    ]
+  },
+  {
+    "character": "読",
+    "meaning": "read",
+    "onyomi": [
+      "ドク"
+    ],
+    "kunyomi": [
+      "よむ"
+    ],
+    "examples": [
+      {
+        "kanji": "読む",
+        "hiragana": "よむ",
+        "english": "to read"
+      },
+      {
+        "kanji": "読書",
+        "hiragana": "どくしょ",
+        "english": "reading"
+      }
+    ]
+  },
+  {
+    "character": "語",
+    "meaning": "language",
+    "onyomi": [
+      "ゴ"
+    ],
+    "kunyomi": [
+      "かたる"
+    ],
+    "examples": [
+      {
+        "kanji": "日本語",
+        "hiragana": "にほんご",
+        "english": "Japanese"
+      },
+      {
+        "kanji": "語る",
+        "hiragana": "かたる",
+        "english": "to tell"
+      }
+    ]
+  },
+  {
+    "character": "話",
+    "meaning": "talk",
+    "onyomi": [
+      "ワ"
+    ],
+    "kunyomi": [
+      "はなす"
+    ],
+    "examples": [
+      {
+        "kanji": "話す",
+        "hiragana": "はなす",
+        "english": "to speak"
+      },
+      {
+        "kanji": "会話",
+        "hiragana": "かいわ",
+        "english": "conversation"
+      }
+    ]
+  },
+  {
+    "character": "国",
+    "meaning": "country",
+    "onyomi": [
+      "コク"
+    ],
+    "kunyomi": [
+      "くに"
+    ],
+    "examples": [
+      {
+        "kanji": "国",
+        "hiragana": "くに",
+        "english": "country"
+      },
+      {
+        "kanji": "外国",
+        "hiragana": "がいこく",
+        "english": "foreign country"
+      }
+    ]
+  },
+  {
+    "character": "図",
+    "meaning": "drawing",
+    "onyomi": [
+      "ズ"
+    ],
+    "kunyomi": [
+      "はかる"
+    ],
+    "examples": [
+      {
+        "kanji": "地図",
+        "hiragana": "ちず",
+        "english": "map"
+      },
+      {
+        "kanji": "図書館",
+        "hiragana": "としょかん",
+        "english": "library"
+      }
+    ]
+  },
+  {
+    "character": "園",
+    "meaning": "garden",
+    "onyomi": [
+      "エン"
+    ],
+    "kunyomi": [
+      "その"
+    ],
+    "examples": [
+      {
+        "kanji": "公園",
+        "hiragana": "こうえん",
+        "english": "park"
+      },
+      {
+        "kanji": "動物園",
+        "hiragana": "どうぶつえん",
+        "english": "zoo"
+      }
+    ]
+  },
+  {
+    "character": "科",
+    "meaning": "course",
+    "onyomi": [
+      "カ"
+    ],
+    "kunyomi": [],
+    "examples": [
+      {
+        "kanji": "科学",
+        "hiragana": "かがく",
+        "english": "science"
+      },
+      {
+        "kanji": "教科書",
+        "hiragana": "きょうかしょ",
+        "english": "textbook"
+      }
+    ]
+  },
+  {
+    "character": "市",
+    "meaning": "city",
+    "onyomi": [
+      "シ"
+    ],
+    "kunyomi": [
+      "いち"
+    ],
+    "examples": [
+      {
+        "kanji": "市",
+        "hiragana": "いち",
+        "english": "city"
+      },
+      {
+        "kanji": "市場",
+        "hiragana": "いちば",
+        "english": "market"
+      }
+    ]
+  },
+  {
+    "character": "帰",
+    "meaning": "return",
+    "onyomi": [
+      "キ"
+    ],
+    "kunyomi": [
+      "かえる"
+    ],
+    "examples": [
+      {
+        "kanji": "帰る",
+        "hiragana": "かえる",
+        "english": "to return"
+      },
+      {
+        "kanji": "帰国",
+        "hiragana": "きこく",
+        "english": "return home"
+      }
+    ]
+  },
+  {
+    "character": "黄",
+    "meaning": "yellow",
+    "onyomi": [
+      "オウ"
+    ],
+    "kunyomi": [
+      "き"
+    ],
+    "examples": [
+      {
+        "kanji": "黄色",
+        "hiragana": "きいろ",
+        "english": "yellow"
+      },
+      {
+        "kanji": "黄信号",
+        "hiragana": "きしんごう",
+        "english": "yellow light"
+      }
+    ]
+  },
+  {
+    "character": "元",
+    "meaning": "origin",
+    "onyomi": [
+      "ゲン",
+      "ガン"
+    ],
+    "kunyomi": [
+      "もと"
+    ],
+    "examples": [
+      {
+        "kanji": "元気",
+        "hiragana": "げんき",
+        "english": "healthy"
+      },
+      {
+        "kanji": "元",
+        "hiragana": "もと",
+        "english": "origin"
+      }
+    ]
+  },
+  {
+    "character": "光",
+    "meaning": "light",
+    "onyomi": [
+      "コウ"
+    ],
+    "kunyomi": [
+      "ひかり"
+    ],
+    "examples": [
+      {
+        "kanji": "光",
+        "hiragana": "ひかり",
+        "english": "light"
+      },
+      {
+        "kanji": "日光",
+        "hiragana": "にっこう",
+        "english": "sunlight"
+      }
+    ]
+  },
+  {
+    "character": "売",
+    "meaning": "sell",
+    "onyomi": [
+      "バイ"
+    ],
+    "kunyomi": [
+      "うる"
+    ],
+    "examples": [
+      {
+        "kanji": "売る",
+        "hiragana": "うる",
+        "english": "to sell"
+      },
+      {
+        "kanji": "販売",
+        "hiragana": "はんばい",
+        "english": "sales"
+      }
+    ]
+  },
+  {
+    "character": "半",
+    "meaning": "half",
+    "onyomi": [
+      "ハン"
+    ],
+    "kunyomi": [
+      "なかば"
+    ],
+    "examples": [
+      {
+        "kanji": "半分",
+        "hiragana": "はんぶん",
+        "english": "half"
+      },
+      {
+        "kanji": "半日",
+        "hiragana": "はんにち",
+        "english": "half day"
+      }
+    ]
+  },
+  {
+    "character": "切",
+    "meaning": "cut",
+    "onyomi": [
+      "セツ"
+    ],
+    "kunyomi": [
+      "きる"
+    ],
+    "examples": [
+      {
+        "kanji": "切る",
+        "hiragana": "きる",
+        "english": "to cut"
+      },
+      {
+        "kanji": "大切",
+        "hiragana": "たいせつ",
+        "english": "important"
+      }
+    ]
+  },
+  {
+    "character": "分",
+    "meaning": "divide",
+    "onyomi": [
+      "ブン",
+      "フン"
+    ],
+    "kunyomi": [
+      "わける"
+    ],
+    "examples": [
+      {
+        "kanji": "分ける",
+        "hiragana": "わける",
+        "english": "to divide"
+      },
+      {
+        "kanji": "時間",
+        "hiragana": "じかん",
+        "english": "time"
+      }
+    ]
+  },
+  {
+    "character": "番",
+    "meaning": "order",
+    "onyomi": [
+      "バン"
+    ],
+    "kunyomi": [],
+    "examples": [
+      {
+        "kanji": "番号",
+        "hiragana": "ばんごう",
+        "english": "number"
+      },
+      {
+        "kanji": "一番",
+        "hiragana": "いちばん",
+        "english": "number one"
+      }
+    ]
+  },
+  {
+    "character": "米",
+    "meaning": "rice",
+    "onyomi": [
+      "ベイ",
+      "マイ"
+    ],
+    "kunyomi": [
+      "こめ"
+    ],
+    "examples": [
+      {
+        "kanji": "米",
+        "hiragana": "こめ",
+        "english": "rice"
+      },
+      {
+        "kanji": "アメリカ",
+        "hiragana": "あめりか",
+        "english": "America"
+      }
+    ]
+  },
+  {
+    "character": "絵",
+    "meaning": "picture",
+    "onyomi": [
+      "カイ",
+      "エ"
+    ],
+    "kunyomi": [],
+    "examples": [
+      {
+        "kanji": "絵",
+        "hiragana": "え",
+        "english": "picture"
+      },
+      {
+        "kanji": "絵本",
+        "hiragana": "えほん",
+        "english": "picture book"
+      }
+    ]
+  },
+  {
+    "character": "細",
+    "meaning": "detailed",
+    "onyomi": [
+      "サイ"
+    ],
+    "kunyomi": [
+      "ほそい"
+    ],
+    "examples": [
+      {
+        "kanji": "細い",
+        "hiragana": "ほそい",
+        "english": "thin"
+      },
+      {
+        "kanji": "詳細",
+        "hiragana": "しょうさい",
+        "english": "details"
+      }
+    ]
+  },
+  {
+    "character": "線",
+    "meaning": "line",
+    "onyomi": [
+      "セン"
+    ],
+    "kunyomi": [],
+    "examples": [
+      {
+        "kanji": "線",
+        "hiragana": "せん",
+        "english": "line"
+      },
+      {
+        "kanji": "新幹線",
+        "hiragana": "しんかんせん",
+        "english": "Shinkansen"
+      }
+    ]
+  },
+  {
+    "character": "紙",
+    "meaning": "paper",
+    "onyomi": [
+      "シ"
+    ],
+    "kunyomi": [
+      "かみ"
+    ],
+    "examples": [
+      {
+        "kanji": "紙",
+        "hiragana": "かみ",
+        "english": "paper"
+      },
+      {
+        "kanji": "手紙",
+        "hiragana": "てがみ",
+        "english": "letter"
+      }
+    ]
+  },
+  {
+    "character": "組",
+    "meaning": "group",
+    "onyomi": [
+      "ソ"
+    ],
+    "kunyomi": [
+      "くむ"
+    ],
+    "examples": [
+      {
+        "kanji": "組む",
+        "hiragana": "くむ",
+        "english": "to assemble"
+      },
+      {
+        "kanji": "組織",
+        "hiragana": "そしき",
+        "english": "organization"
+      }
+    ]
+  },
+  {
+    "character": "外",
+    "meaning": "outside",
+    "onyomi": [
+      "ガイ"
+    ],
+    "kunyomi": [
+      "そと"
+    ],
+    "examples": [
+      {
+        "kanji": "外",
+        "hiragana": "そと",
+        "english": "outside"
+      },
+      {
+        "kanji": "外国人",
+        "hiragana": "がいこくじん",
+        "english": "foreigner"
+      }
+    ]
+  },
+  {
+    "character": "角",
+    "meaning": "corner",
+    "onyomi": [
+      "カク"
+    ],
+    "kunyomi": [
+      "かど"
+    ],
+    "examples": [
+      {
+        "kanji": "角",
+        "hiragana": "かど",
+        "english": "corner"
+      },
+      {
+        "kanji": "角度",
+        "hiragana": "かくど",
+        "english": "angle"
+      }
+    ]
+  },
+  {
+    "character": "歌",
+    "meaning": "song",
+    "onyomi": [
+      "カ"
+    ],
+    "kunyomi": [
+      "うた"
+    ],
+    "examples": [
+      {
+        "kanji": "歌",
+        "hiragana": "うた",
+        "english": "song"
+      },
+      {
+        "kanji": "歌う",
+        "hiragana": "うたう",
+        "english": "to sing"
+      }
+    ]
+  },
+  {
+    "character": "牛",
+    "meaning": "cow",
+    "onyomi": [
+      "ギュウ"
+    ],
+    "kunyomi": [
+      "うし"
+    ],
+    "examples": [
+      {
+        "kanji": "牛",
+        "hiragana": "うし",
+        "english": "cow"
+      },
+      {
+        "kanji": "牛肉",
+        "hiragana": "ぎゅうにく",
+        "english": "beef"
+      }
+    ]
+  },
+  {
+    "character": "午",
+    "meaning": "noon",
+    "onyomi": [
+      "ゴ"
+    ],
+    "kunyomi": [],
+    "examples": [
+      {
+        "kanji": "午前",
+        "hiragana": "ごぜん",
+        "english": "morning"
+      },
+      {
+        "kanji": "午後",
+        "hiragana": "ごご",
+        "english": "afternoon"
+      }
+    ]
+  },
+  {
+    "character": "点",
+    "meaning": "point",
+    "onyomi": [
+      "テン"
+    ],
+    "kunyomi": [],
+    "examples": [
+      {
+        "kanji": "点",
+        "hiragana": "てん",
+        "english": "point"
+      },
+      {
+        "kanji": "点数",
+        "hiragana": "てんすう",
+        "english": "score"
+      }
+    ]
+  },
+  {
+    "character": "黒",
+    "meaning": "black",
+    "onyomi": [
+      "コク"
+    ],
+    "kunyomi": [
+      "くろ"
+    ],
+    "examples": [
+      {
+        "kanji": "黒い",
+        "hiragana": "くろい",
+        "english": "black"
+      },
+      {
+        "kanji": "黒板",
+        "hiragana": "こくばん",
+        "english": "blackboard"
+      }
+    ]
+  },
+  {
+    "character": "魚",
+    "meaning": "fish",
+    "onyomi": [
+      "ギョ"
+    ],
+    "kunyomi": [
+      "さかな"
+    ],
+    "examples": [
+      {
+        "kanji": "魚",
+        "hiragana": "さかな",
+        "english": "fish"
+      },
+      {
+        "kanji": "金魚",
+        "hiragana": "きんぎょ",
+        "english": "goldfish"
+      }
+    ]
+  },
+  {
+    "character": "馬",
+    "meaning": "horse",
+    "onyomi": [
+      "バ"
+    ],
+    "kunyomi": [
+      "うま"
+    ],
+    "examples": [
+      {
+        "kanji": "馬",
+        "hiragana": "うま",
+        "english": "horse"
+      },
+      {
+        "kanji": "馬車",
+        "hiragana": "ばしゃ",
+        "english": "carriage"
+      }
+    ]
+  },
+  {
+    "character": "鳥",
+    "meaning": "bird",
+    "onyomi": [
+      "チョウ"
+    ],
+    "kunyomi": [
+      "とり"
+    ],
+    "examples": [
+      {
+        "kanji": "鳥",
+        "hiragana": "とり",
+        "english": "bird"
+      },
+      {
+        "kanji": "鳥肉",
+        "hiragana": "とりにく",
+        "english": "chicken meat"
+      }
+    ]
+  },
+  {
+    "character": "京",
+    "meaning": "capital",
+    "onyomi": [
+      "キョウ",
+      "ケイ"
+    ],
+    "kunyomi": [],
+    "examples": [
+      {
+        "kanji": "東京",
+        "hiragana": "とうきょう",
+        "english": "Tokyo"
+      },
+      {
+        "kanji": "京都",
+        "hiragana": "きょうと",
+        "english": "Kyoto"
+      }
+    ]
+  },
+  {
+    "character": "交",
+    "meaning": "exchange",
+    "onyomi": [
+      "コウ"
+    ],
+    "kunyomi": [
+      "まじわる"
+    ],
+    "examples": [
+      {
+        "kanji": "交差点",
+        "hiragana": "こうさてん",
+        "english": "intersection"
+      },
+      {
+        "kanji": "交通",
+        "hiragana": "こうつう",
+        "english": "traffic"
+      }
+    ]
+  },
+  {
+    "character": "形",
+    "meaning": "shape",
+    "onyomi": [
+      "ケイ",
+      "ギョウ"
+    ],
+    "kunyomi": [
+      "かたち"
+    ],
+    "examples": [
+      {
+        "kanji": "形",
+        "hiragana": "かたち",
+        "english": "shape"
+      },
+      {
+        "kanji": "三角形",
+        "hiragana": "さんかくけい",
+        "english": "triangle"
+      }
+    ]
+  },
+  {
+    "character": "戸",
+    "meaning": "door",
+    "onyomi": [
+      "コ"
+    ],
+    "kunyomi": [
+      "と"
+    ],
+    "examples": [
+      {
+        "kanji": "戸",
+        "hiragana": "と",
+        "english": "door"
+      },
+      {
+        "kanji": "戸棚",
+        "hiragana": "とだな",
+        "english": "cupboard"
+      }
+    ]
+  },
+  {
+    "character": "声",
+    "meaning": "voice",
+    "onyomi": [
+      "セイ"
+    ],
+    "kunyomi": [
+      "こえ"
+    ],
+    "examples": [
+      {
+        "kanji": "声",
+        "hiragana": "こえ",
+        "english": "voice"
+      },
+      {
+        "kanji": "大声",
+        "hiragana": "おおごえ",
+        "english": "loud voice"
+      }
+    ]
+  },
+  {
+    "character": "色",
+    "meaning": "color",
+    "onyomi": [
+      "ショク",
+      "シキ"
+    ],
+    "kunyomi": [
+      "いろ"
+    ],
+    "examples": [
+      {
+        "kanji": "色",
+        "hiragana": "いろ",
+        "english": "color"
+      },
+      {
+        "kanji": "赤色",
+        "hiragana": "あかいろ",
+        "english": "red color"
+      }
+    ]
+  },
+  {
+    "character": "公",
+    "meaning": "public",
+    "onyomi": [
+      "コウ"
+    ],
+    "kunyomi": [
+      "おおやけ"
+    ],
+    "examples": [
+      {
+        "kanji": "公園",
+        "hiragana": "こうえん",
+        "english": "park"
+      },
+      {
+        "kanji": "公衆",
+        "hiragana": "こうしゅう",
+        "english": "public"
+      }
+    ]
+  },
+  {
+    "character": "台",
+    "meaning": "stand",
+    "onyomi": [
+      "ダイ"
+    ],
+    "kunyomi": [],
+    "examples": [
+      {
+        "kanji": "台所",
+        "hiragana": "だいどころ",
+        "english": "kitchen"
+      },
+      {
+        "kanji": "台風",
+        "hiragana": "たいふう",
+        "english": "typhoon"
+      }
+    ]
+  },
+  {
+    "character": "広",
+    "meaning": "wide",
+    "onyomi": [
+      "コウ"
+    ],
+    "kunyomi": [
+      "ひろい"
+    ],
+    "examples": [
+      {
+        "kanji": "広い",
+        "hiragana": "ひろい",
+        "english": "wide"
+      },
+      {
+        "kanji": "広告",
+        "hiragana": "こうこく",
+        "english": "advertisement"
+      }
+    ]
+  },
+  {
+    "character": "店",
+    "meaning": "store",
+    "onyomi": [
+      "テン"
+    ],
+    "kunyomi": [
+      "みせ"
+    ],
+    "examples": [
+      {
+        "kanji": "店",
+        "hiragana": "みせ",
+        "english": "store"
+      },
+      {
+        "kanji": "店員",
+        "hiragana": "てんいん",
+        "english": "clerk"
+      }
+    ]
+  },
+  {
+    "character": "古",
+    "meaning": "old",
+    "onyomi": [
+      "コ"
+    ],
+    "kunyomi": [
+      "ふるい"
+    ],
+    "examples": [
+      {
+        "kanji": "古い",
+        "hiragana": "ふるい",
+        "english": "old"
+      },
+      {
+        "kanji": "古代",
+        "hiragana": "こだい",
+        "english": "ancient times"
+      }
+    ]
+  },
+  {
+    "character": "高",
+    "meaning": "high",
+    "onyomi": [
+      "コウ"
+    ],
+    "kunyomi": [
+      "たかい"
+    ],
+    "examples": [
+      {
+        "kanji": "高い",
+        "hiragana": "たかい",
+        "english": "high"
+      },
+      {
+        "kanji": "高校",
+        "hiragana": "こうこう",
+        "english": "high school"
+      }
+    ]
+  },
+  {
+    "character": "谷",
+    "meaning": "valley",
+    "onyomi": [
+      "コク"
+    ],
+    "kunyomi": [
+      "たに"
+    ],
+    "examples": [
+      {
+        "kanji": "谷",
+        "hiragana": "たに",
+        "english": "valley"
+      },
+      {
+        "kanji": "谷間",
+        "hiragana": "たにま",
+        "english": "valley"
+      }
+    ]
+  },
+  {
+    "character": "知",
+    "meaning": "know",
+    "onyomi": [
+      "チ"
+    ],
+    "kunyomi": [
+      "しる"
+    ],
+    "examples": [
+      {
+        "kanji": "知る",
+        "hiragana": "しる",
+        "english": "to know"
+      },
+      {
+        "kanji": "知識",
+        "hiragana": "ちしき",
+        "english": "knowledge"
+      }
+    ]
+  },
+  {
+    "character": "船",
+    "meaning": "boat",
+    "onyomi": [
+      "セン"
+    ],
+    "kunyomi": [
+      "ふね"
+    ],
+    "examples": [
+      {
+        "kanji": "船",
+        "hiragana": "ふね",
+        "english": "boat"
+      },
+      {
+        "kanji": "船長",
+        "hiragana": "せんちょう",
+        "english": "captain"
+      }
+    ]
+  },
+  {
+    "character": "会",
+    "meaning": "meet",
+    "onyomi": [
+      "カイ"
+    ],
+    "kunyomi": [
+      "あう"
+    ],
+    "examples": [
+      {
+        "kanji": "会う",
+        "hiragana": "あう",
+        "english": "to meet"
+      },
+      {
+        "kanji": "会社",
+        "hiragana": "かいしゃ",
+        "english": "company"
+      }
+    ]
+  },
+  {
+    "character": "食",
+    "meaning": "eat",
+    "onyomi": [
+      "ショク"
+    ],
+    "kunyomi": [
+      "たべる"
+    ],
+    "examples": [
+      {
+        "kanji": "食べる",
+        "hiragana": "たべる",
+        "english": "to eat"
+      },
+      {
+        "kanji": "食事",
+        "hiragana": "しょくじ",
+        "english": "meal"
+      }
+    ]
+  },
+  {
+    "character": "今",
+    "meaning": "now",
+    "onyomi": [
+      "コン"
+    ],
+    "kunyomi": [
+      "いま"
+    ],
+    "examples": [
+      {
+        "kanji": "今",
+        "hiragana": "いま",
+        "english": "now"
+      },
+      {
+        "kanji": "今日",
+        "hiragana": "きょう",
+        "english": "today"
+      }
+    ]
+  },
+  {
+    "character": "合",
+    "meaning": "fit",
+    "onyomi": [
+      "ゴウ"
+    ],
+    "kunyomi": [
+      "あう"
+    ],
+    "examples": [
+      {
+        "kanji": "合う",
+        "hiragana": "あう",
+        "english": "to fit"
+      },
+      {
+        "kanji": "都合",
+        "hiragana": "つごう",
+        "english": "circumstances"
+      }
+    ]
+  },
+  {
+    "character": "顔",
+    "meaning": "face",
+    "onyomi": [
+      "ガン"
+    ],
+    "kunyomi": [
+      "かお"
+    ],
+    "examples": [
+      {
+        "kanji": "顔",
+        "hiragana": "かお",
+        "english": "face"
+      },
+      {
+        "kanji": "顔色",
+        "hiragana": "かおいろ",
+        "english": "complexion"
+      }
+    ]
+  },
+  {
+    "character": "頭",
+    "meaning": "head",
+    "onyomi": [
+      "トウ",
+      "ズ"
+    ],
+    "kunyomi": [
+      "あたま"
+    ],
+    "examples": [
+      {
+        "kanji": "頭",
+        "hiragana": "あたま",
+        "english": "head"
+      },
+      {
+        "kanji": "頭痛",
+        "hiragana": "ずつう",
+        "english": "headache"
+      }
+    ]
+  },
+  {
+    "character": "工",
+    "meaning": "construction",
+    "onyomi": [
+      "コウ"
+    ],
+    "kunyomi": [],
+    "examples": [
+      {
+        "kanji": "工事",
+        "hiragana": "こうじ",
+        "english": "construction"
+      },
+      {
+        "kanji": "工業",
+        "hiragana": "こうぎょう",
+        "english": "industry"
+      }
+    ]
+  },
+  {
+    "character": "太",
+    "meaning": "thick",
+    "onyomi": [
+      "タイ"
+    ],
+    "kunyomi": [
+      "ふとい"
+    ],
+    "examples": [
+      {
+        "kanji": "太い",
+        "hiragana": "ふとい",
+        "english": "thick"
+      },
+      {
+        "kanji": "太陽",
+        "hiragana": "たいよう",
+        "english": "sun"
+      }
+    ]
+  },
+  {
+    "character": "画",
+    "meaning": "picture",
+    "onyomi": [
+      "ガ"
+    ],
+    "kunyomi": [],
+    "examples": [
+      {
+        "kanji": "映画",
+        "hiragana": "えいが",
+        "english": "movie"
+      },
+      {
+        "kanji": "画面",
+        "hiragana": "がめん",
+        "english": "screen"
+      }
+    ]
+  },
+  {
+    "character": "回",
+    "meaning": "spin",
+    "onyomi": [
+      "カイ"
+    ],
+    "kunyomi": [
+      "まわる"
+    ],
+    "examples": [
+      {
+        "kanji": "回る",
+        "hiragana": "まわる",
+        "english": "to turn"
+      },
+      {
+        "kanji": "一回",
+        "hiragana": "いっかい",
+        "english": "once"
+      }
+    ]
+  },
+  {
+    "character": "止",
+    "meaning": "stop",
+    "onyomi": [
+      "シ"
+    ],
+    "kunyomi": [
+      "とまる"
+    ],
+    "examples": [
+      {
+        "kanji": "止まる",
+        "hiragana": "とまる",
+        "english": "to stop"
+      },
+      {
+        "kanji": "禁止",
+        "hiragana": "きんし",
+        "english": "prohibition"
+      }
+    ]
+  },
+  {
+    "character": "才",
+    "meaning": "talent",
+    "onyomi": [
+      "サイ"
+    ],
+    "kunyomi": [],
+    "examples": [
+      {
+        "kanji": "才能",
+        "hiragana": "さいのう",
+        "english": "talent"
+      },
+      {
+        "kanji": "天才",
+        "hiragana": "てんさい",
+        "english": "genius"
+      }
+    ]
+  },
+  {
+    "character": "寺",
+    "meaning": "temple",
+    "onyomi": [
+      "ジ"
+    ],
+    "kunyomi": [
+      "てら"
+    ],
+    "examples": [
+      {
+        "kanji": "寺",
+        "hiragana": "てら",
+        "english": "temple"
+      },
+      {
+        "kanji": "お寺",
+        "hiragana": "おてら",
+        "english": "temple"
+      }
+    ]
+  },
+  {
+    "character": "自",
+    "meaning": "oneself",
+    "onyomi": [
+      "ジ",
+      "シ"
+    ],
+    "kunyomi": [
+      "みずから"
+    ],
+    "examples": [
+      {
+        "kanji": "自分",
+        "hiragana": "じぶん",
+        "english": "oneself"
+      },
+      {
+        "kanji": "自由",
+        "hiragana": "じゆう",
+        "english": "freedom"
+      }
+    ]
+  },
+  {
+    "character": "時",
+    "meaning": "time",
+    "onyomi": [
+      "ジ"
+    ],
+    "kunyomi": [
+      "とき"
+    ],
+    "examples": [
+      {
+        "kanji": "時",
+        "hiragana": "とき",
+        "english": "time"
+      },
+      {
+        "kanji": "時間",
+        "hiragana": "じかん",
+        "english": "time"
+      }
+    ]
+  },
+  {
+    "character": "曜",
+    "meaning": "weekday",
+    "onyomi": [
+      "ヨウ"
+    ],
+    "kunyomi": [],
+    "examples": [
+      {
+        "kanji": "曜日",
+        "hiragana": "ようび",
+        "english": "day of week"
+      },
+      {
+        "kanji": "月曜日",
+        "hiragana": "げつようび",
+        "english": "Monday"
+      }
+    ]
+  },
+  {
+    "character": "晴",
+    "meaning": "clear",
+    "onyomi": [
+      "セイ"
+    ],
+    "kunyomi": [
+      "はれる"
+    ],
+    "examples": [
+      {
+        "kanji": "晴れ",
+        "hiragana": "はれ",
+        "english": "clear weather"
+      },
+      {
+        "kanji": "快晴",
+        "hiragana": "かいせい",
+        "english": "sunny weather"
+      }
+    ]
+  },
+  {
+    "character": "原",
+    "meaning": "field",
+    "onyomi": [
+      "ゲン"
+    ],
+    "kunyomi": [
+      "はら"
+    ],
+    "examples": [
+      {
+        "kanji": "原っぱ",
+        "hiragana": "はらっぱ",
+        "english": "field"
+      },
+      {
+        "kanji": "原因",
+        "hiragana": "げんいん",
+        "english": "cause"
+      }
+    ]
+  },
+  {
+    "character": "書",
+    "meaning": "write",
+    "onyomi": [
+      "ショ"
+    ],
+    "kunyomi": [
+      "かく"
+    ],
+    "examples": [
+      {
+        "kanji": "書く",
+        "hiragana": "かく",
+        "english": "to write"
+      },
+      {
+        "kanji": "本屋",
+        "hiragana": "ほんや",
+        "english": "bookstore"
+      }
+    ]
+  },
+  {
+    "character": "星",
+    "meaning": "star",
+    "onyomi": [
+      "セイ"
+    ],
+    "kunyomi": [
+      "ほし"
+    ],
+    "examples": [
+      {
+        "kanji": "星",
+        "hiragana": "ほし",
+        "english": "star"
+      },
+      {
+        "kanji": "星座",
+        "hiragana": "せいざ",
+        "english": "constellation"
+      }
+    ]
+  },
+  {
+    "character": "明",
+    "meaning": "bright",
+    "onyomi": [
+      "メイ"
+    ],
+    "kunyomi": [
+      "あかるい"
+    ],
+    "examples": [
+      {
+        "kanji": "明るい",
+        "hiragana": "あかるい",
+        "english": "bright"
+      },
+      {
+        "kanji": "明日",
+        "hiragana": "あした",
+        "english": "tomorrow"
+      }
+    ]
+  },
+  {
+    "character": "社",
+    "meaning": "company",
+    "onyomi": [
+      "シャ"
+    ],
+    "kunyomi": [
+      "やしろ"
+    ],
+    "examples": [
+      {
+        "kanji": "会社",
+        "hiragana": "かいしゃ",
+        "english": "company"
+      },
+      {
+        "kanji": "社長",
+        "hiragana": "しゃちょう",
+        "english": "president"
+      }
+    ]
+  },
+  {
+    "character": "首",
+    "meaning": "neck",
+    "onyomi": [
+      "シュ"
+    ],
+    "kunyomi": [
+      "くび"
+    ],
+    "examples": [
+      {
+        "kanji": "首",
+        "hiragana": "くび",
+        "english": "neck"
+      },
+      {
+        "kanji": "首都",
+        "hiragana": "しゅと",
+        "english": "capital city"
+      }
+    ]
+  },
+  {
+    "character": "直",
+    "meaning": "straight",
+    "onyomi": [
+      "チョク",
+      "ジキ"
+    ],
+    "kunyomi": [
+      "なおる"
+    ],
+    "examples": [
+      {
+        "kanji": "直る",
+        "hiragana": "なおる",
+        "english": "to be fixed"
+      },
+      {
+        "kanji": "直接",
+        "hiragana": "ちょくせつ",
+        "english": "direct"
+      }
+    ]
+  },
+  {
+    "character": "新",
+    "meaning": "new",
+    "onyomi": [
+      "シン"
+    ],
+    "kunyomi": [
+      "あたらしい"
+    ],
+    "examples": [
+      {
+        "kanji": "新しい",
+        "hiragana": "あたらしい",
+        "english": "new"
+      },
+      {
+        "kanji": "新聞",
+        "hiragana": "しんぶん",
+        "english": "newspaper"
+      }
+    ]
+  },
+  {
+    "character": "親",
+    "meaning": "parent",
+    "onyomi": [
+      "シン"
+    ],
+    "kunyomi": [
+      "おや"
+    ],
+    "examples": [
+      {
+        "kanji": "親",
+        "hiragana": "おや",
+        "english": "parent"
+      },
+      {
+        "kanji": "親切",
+        "hiragana": "しんせつ",
+        "english": "kind"
+      }
+    ]
+  },
+  {
+    "character": "数",
+    "meaning": "number",
+    "onyomi": [
+      "スウ"
+    ],
+    "kunyomi": [
+      "かず"
+    ],
+    "examples": [
+      {
+        "kanji": "数",
+        "hiragana": "かず",
+        "english": "number"
+      },
+      {
+        "kanji": "数学",
+        "hiragana": "すうがく",
+        "english": "mathematics"
+      }
+    ]
+  },
+  {
+    "character": "教",
+    "meaning": "teach",
+    "onyomi": [
+      "キョウ"
+    ],
+    "kunyomi": [
+      "おしえる"
+    ],
+    "examples": [
+      {
+        "kanji": "教える",
+        "hiragana": "おしえる",
+        "english": "to teach"
+      },
+      {
+        "kanji": "教室",
+        "hiragana": "きょうしつ",
+        "english": "classroom"
+      }
+    ]
+  },
+  {
+    "character": "買",
+    "meaning": "buy",
+    "onyomi": [
+      "バイ"
+    ],
+    "kunyomi": [
+      "かう"
+    ],
+    "examples": [
+      {
+        "kanji": "買う",
+        "hiragana": "かう",
+        "english": "to buy"
+      },
+      {
+        "kanji": "買い物",
+        "hiragana": "かいもの",
+        "english": "shopping"
+      }
+    ]
+  },
+  {
+    "character": "前",
+    "meaning": "front",
+    "onyomi": [
+      "ゼン"
+    ],
+    "kunyomi": [
+      "まえ"
+    ],
+    "examples": [
+      {
+        "kanji": "前",
+        "hiragana": "まえ",
+        "english": "front"
+      },
+      {
+        "kanji": "前回",
+        "hiragana": "ぜんかい",
+        "english": "previous time"
+      }
+    ]
+  },
+  {
+    "character": "多",
+    "meaning": "many",
+    "onyomi": [
+      "タ"
+    ],
+    "kunyomi": [
+      "おおい"
+    ],
+    "examples": [
+      {
+        "kanji": "多い",
+        "hiragana": "おおい",
+        "english": "many"
+      },
+      {
+        "kanji": "多数",
+        "hiragana": "たすう",
+        "english": "majority"
+      }
+    ]
+  },
+  {
+    "character": "長",
+    "meaning": "long",
+    "onyomi": [
+      "チョウ"
+    ],
+    "kunyomi": [
+      "ながい"
+    ],
+    "examples": [
+      {
+        "kanji": "長い",
+        "hiragana": "ながい",
+        "english": "long"
+      },
+      {
+        "kanji": "長官",
+        "hiragana": "ちょうかん",
+        "english": "director"
+      }
+    ]
+  },
+  {
+    "character": "少",
+    "meaning": "few",
+    "onyomi": [
+      "ショウ"
+    ],
+    "kunyomi": [
+      "すくない"
+    ],
+    "examples": [
+      {
+        "kanji": "少ない",
+        "hiragana": "すくない",
+        "english": "few"
+      },
+      {
+        "kanji": "少年",
+        "hiragana": "しょうねん",
+        "english": "boy"
+      }
+    ]
+  },
+  {
+    "character": "歩",
+    "meaning": "walk",
+    "onyomi": [
+      "ホ"
+    ],
+    "kunyomi": [
+      "あるく"
+    ],
+    "examples": [
+      {
+        "kanji": "歩く",
+        "hiragana": "あるく",
+        "english": "to walk"
+      },
+      {
+        "kanji": "散歩",
+        "hiragana": "さんぽ",
+        "english": "stroll"
+      }
+    ]
+  },
+  {
+    "character": "毎",
+    "meaning": "every",
+    "onyomi": [
+      "マイ"
+    ],
+    "kunyomi": [],
+    "examples": [
+      {
+        "kanji": "毎日",
+        "hiragana": "まいにち",
+        "english": "every day"
+      },
+      {
+        "kanji": "毎年",
+        "hiragana": "まいとし",
+        "english": "every year"
+      }
+    ]
+  },
+  {
+    "character": "方",
+    "meaning": "direction",
+    "onyomi": [
+      "ホウ"
+    ],
+    "kunyomi": [
+      "かた"
+    ],
+    "examples": [
+      {
+        "kanji": "方",
+        "hiragana": "かた",
+        "english": "way"
+      },
+      {
+        "kanji": "方法",
+        "hiragana": "ほうほう",
+        "english": "method"
+      }
+    ]
+  },
+  {
+    "character": "理",
+    "meaning": "logic",
+    "onyomi": [
+      "リ"
+    ],
+    "kunyomi": [],
+    "examples": [
+      {
+        "kanji": "理由",
+        "hiragana": "りゆう",
+        "english": "reason"
+      },
+      {
+        "kanji": "理科",
+        "hiragana": "りか",
+        "english": "science"
+      }
+    ]
+  },
+  {
+    "character": "友",
+    "meaning": "friend",
+    "onyomi": [
+      "ユウ"
+    ],
+    "kunyomi": [
+      "とも"
+    ],
+    "examples": [
+      {
+        "kanji": "友達",
+        "hiragana": "ともだち",
+        "english": "friend"
+      },
+      {
+        "kanji": "友情",
+        "hiragana": "ゆうじょう",
+        "english": "friendship"
+      }
+    ]
+  },
+  {
+    "character": "野",
+    "meaning": "wild",
+    "onyomi": [
+      "ヤ"
+    ],
+    "kunyomi": [
+      "の"
+    ],
+    "examples": [
+      {
+        "kanji": "野原",
+        "hiragana": "のはら",
+        "english": "field"
+      },
+      {
+        "kanji": "野生",
+        "hiragana": "やせい",
+        "english": "wild"
+      }
+    ]
+  },
+  {
+    "character": "風",
+    "meaning": "wind",
+    "onyomi": [
+      "フウ"
+    ],
+    "kunyomi": [
+      "かぜ"
+    ],
+    "examples": [
+      {
+        "kanji": "風",
+        "hiragana": "かぜ",
+        "english": "wind"
+      },
+      {
+        "kanji": "台風",
+        "hiragana": "たいふう",
+        "english": "typhoon"
+      }
+    ]
+  },
+  {
+    "character": "丸",
+    "meaning": "circle",
+    "onyomi": [
+      "ガン"
+    ],
+    "kunyomi": [
+      "まる"
+    ],
+    "examples": [
+      {
+        "kanji": "丸い",
+        "hiragana": "まるい",
+        "english": "round"
+      },
+      {
+        "kanji": "丸",
+        "hiragana": "まる",
+        "english": "circle"
+      }
+    ]
+  },
+  {
+    "character": "毛",
+    "meaning": "hair",
+    "onyomi": [
+      "モウ"
+    ],
+    "kunyomi": [
+      "け"
+    ],
+    "examples": [
+      {
+        "kanji": "毛",
+        "hiragana": "け",
+        "english": "hair"
+      },
+      {
+        "kanji": "毛糸",
+        "hiragana": "けいと",
+        "english": "yarn"
+      }
+    ]
+  },
+  {
+    "character": "考",
+    "meaning": "think",
+    "onyomi": [
+      "コウ"
+    ],
+    "kunyomi": [
+      "かんがえる"
+    ],
+    "examples": [
+      {
+        "kanji": "考える",
+        "hiragana": "かんがえる",
+        "english": "to think"
+      },
+      {
+        "kanji": "参考",
+        "hiragana": "さんこう",
+        "english": "reference"
+      }
+    ]
+  },
+  {
+    "character": "万",
+    "meaning": "ten thousand",
+    "onyomi": [
+      "マン"
+    ],
+    "kunyomi": [],
+    "examples": [
+      {
+        "kanji": "万",
+        "hiragana": "まん",
+        "english": "ten thousand"
+      },
+      {
+        "kanji": "万一",
+        "hiragana": "まんいち",
+        "english": "in case"
+      }
+    ]
+  },
+  {
+    "character": "用",
+    "meaning": "task",
+    "onyomi": [
+      "ヨウ"
+    ],
+    "kunyomi": [
+      "もちいる"
+    ],
+    "examples": [
+      {
+        "kanji": "使う",
+        "hiragana": "つかう",
+        "english": "to use"
+      },
+      {
+        "kanji": "用事",
+        "hiragana": "ようじ",
+        "english": "task"
+      }
+    ]
+  }
+]
