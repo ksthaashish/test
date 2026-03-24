@@ -105,6 +105,45 @@ body.drag-mode-on .kanji-btn:hover { border-color:var(--indigo); box-shadow:0 4p
   background:var(--paper); padding:8px; border-radius:var(--radius-sm); border:1px solid var(--paper-3);
 }
 
+/* ── Search bar ────────────────────────────────────────────────────────────── */
+.search-wrap {
+  position: relative;
+  margin-bottom: 18px;
+}
+.search-input {
+  width: 100%;
+  padding: 10px 16px 10px 38px;
+  font-size: .95rem;
+  font-family: inherit;
+  border: 1.5px solid var(--paper-3);
+  border-radius: var(--radius);
+  background: white;
+  color: var(--ink);
+  outline: none;
+  transition: border-color .18s, box-shadow .18s;
+}
+.search-input:focus {
+  border-color: var(--indigo);
+  box-shadow: 0 0 0 3px rgba(46,74,122,.1);
+}
+.search-input::placeholder { color: var(--ink-4); font-style: italic; }
+.search-icon {
+  position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+  color: var(--ink-4); font-size: 1rem; pointer-events: none;
+}
+.search-clear {
+  position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; color: var(--ink-4); cursor: pointer;
+  font-size: 1rem; line-height: 1; padding: 2px 4px; border-radius: 3px;
+  display: none;
+}
+.search-clear.visible { display: block; }
+.search-clear:hover { color: var(--ink); }
+.search-no-results {
+  grid-column: 1/-1; text-align: center; padding: 40px 20px;
+  color: var(--ink-4); font-style: italic; font-size: .95rem;
+}
+
 @media (max-width:640px) {
   .kanji-grid { grid-template-columns:repeat(auto-fill,minmax(76px,1fr)); }
   .kanji-btn  { font-size:2rem; }
@@ -123,6 +162,7 @@ body.drag-mode-on .kanji-btn:hover { border-color:var(--indigo); box-shadow:0 4p
     <a href="/examples.html">Examples</a>
     <a href="/quiz.html">Quiz</a>
     <a href="/match.html">Match</a>
+    <a href="/srs.html">SRS</a>
   </nav>
 </header>
 
@@ -139,6 +179,11 @@ body.drag-mode-on .kanji-btn:hover { border-color:var(--indigo); box-shadow:0 4p
   </div>
 
   <div class="cat-bar" id="cat-bar"></div>
+  <div class="search-wrap">
+    <span class="search-icon">⌕</span>
+    <input class="search-input" id="kanji-search" placeholder="Search by kanji or meaning…" oninput="onSearch(this.value)" autocomplete="off">
+    <button class="search-clear" id="search-clear-btn" onclick="clearSearch()" title="Clear">✕</button>
+  </div>
   <div class="kanji-grid" id="kanji-grid"></div>
 </main>
 
@@ -270,6 +315,7 @@ function renderCatBar() {
 
 function setCategory(cat) {
   activeCategory = cat;
+  clearSearch();   // reset search when switching category
   renderCatBar();
   renderGrid();
 }
@@ -290,6 +336,20 @@ function applyOrder(list) {
 }
 
 // ── Drag state ─────────────────────────────────────────────────────────────────
+let searchQuery          = '';
+
+function onSearch(val) {
+  searchQuery = val.trim().toLowerCase();
+  document.getElementById('search-clear-btn').classList.toggle('visible', searchQuery.length > 0);
+  renderGrid();
+}
+function clearSearch() {
+  document.getElementById('kanji-search').value = '';
+  searchQuery = '';
+  document.getElementById('search-clear-btn').classList.remove('visible');
+  renderGrid();
+}
+
 let dragModeOn           = false;
 let dragSrcIdx           = null;
 let dragListenersAttached = false;
@@ -298,14 +358,25 @@ let dragListenersAttached = false;
 function renderGrid() {
   const grid     = document.getElementById('kanji-grid');
   const base     = activeCategory === 'all' ? allKanji : allKanji.filter(k => k.category === activeCategory);
-  const filtered = applyOrder(base);
-  grid._orderedKanji = filtered;
+  const ordered  = applyOrder(base);
+  const filtered = searchQuery
+    ? ordered.filter(k =>
+        k.character.includes(searchQuery) ||
+        k.meaning.toLowerCase().includes(searchQuery) ||
+        (k.onyomi  || []).some(r => r.toLowerCase().includes(searchQuery)) ||
+        (k.kunyomi || []).some(r => r.includes(searchQuery))
+      )
+    : ordered;
+  grid._orderedKanji = ordered;   // drag reorder uses full unfiltered list
 
   document.getElementById('kanji-count-label').textContent =
     filtered.length + ' kanji' + (activeCategory !== 'all' ? ' in ' + activeCategory : ' total');
 
   if (!filtered.length) {
-    grid.innerHTML = '<div class="empty-grid"><span class="empty-grid-char">無</span><p>No kanji here yet.</p></div>';
+    const msg = searchQuery
+      ? '<div class="search-no-results">No kanji match <strong>' + searchQuery + '</strong></div>'
+      : '<div class="empty-grid"><span class="empty-grid-char">無</span><p>No kanji here yet.</p></div>';
+    grid.innerHTML = msg;
     return;
   }
 
@@ -706,4 +777,3 @@ init();
 </script>
 </body>
 </html>
-

@@ -1,0 +1,806 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>漢字帳 — Spaced Repetition</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDMincho:wght@400;700&family=Noto+Sans+JP:wght@300;400;500;700&family=Noto+Serif+JP:wght@400;700;900&display=swap">
+<link rel="stylesheet" href="/css/shared.css">
+<style>
+/* ── Screens ─────────────────────────────────────────────────────────────── */
+.screen { display:none; }
+.screen.active { display:block; animation:fadeIn .22s ease; }
+
+/* ── Dashboard / Picker ──────────────────────────────────────────────────── */
+.srs-stats-row {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(110px,1fr)); gap:12px; margin-bottom:24px;
+}
+.stat-card {
+  background:white; border:1px solid var(--paper-3); border-radius:var(--radius);
+  padding:16px 12px; text-align:center; box-shadow:var(--shadow-sm);
+}
+.stat-card-num   { font-size:2rem; font-weight:700; line-height:1; margin-bottom:4px; }
+.stat-card-label { font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3); }
+.due-color   { color:var(--accent); }
+.new-color   { color:var(--indigo); }
+.learn-color { color:#9b59b6; }
+.done-color  { color:var(--green); }
+.total-color { color:var(--ink-3); }
+
+/* ── Picker toolbar ──────────────────────────────────────────────────────── */
+.picker-toolbar {
+  display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+  margin-bottom:14px;
+}
+.picker-search {
+  flex:1; min-width:160px; padding:7px 12px 7px 32px;
+  border:1.5px solid var(--paper-3); border-radius:var(--radius-sm);
+  font-size:.88rem; font-family:inherit; outline:none; background:white;
+  color:var(--ink); transition:border-color .18s;
+}
+.picker-search:focus { border-color:var(--indigo); }
+.picker-search-wrap { position:relative; flex:1; min-width:160px; }
+.picker-search-icon { position:absolute; left:9px; top:50%; transform:translateY(-50%); color:var(--ink-4); font-size:.9rem; pointer-events:none; }
+
+.filter-pill {
+  padding:4px 12px; border-radius:20px; font-size:.72rem; font-weight:500;
+  cursor:pointer; border:1.5px solid var(--paper-3); background:white;
+  color:var(--ink-3); transition:var(--transition); user-select:none; white-space:nowrap;
+}
+.filter-pill:hover  { border-color:var(--indigo); color:var(--indigo); }
+.filter-pill.active { background:var(--indigo); color:white; border-color:var(--indigo); }
+
+.picker-actions { display:flex; gap:6px; align-items:center; flex-wrap:wrap; }
+.picker-count {
+  font-size:.75rem; color:var(--ink-3); white-space:nowrap;
+  padding:5px 10px; background:var(--paper-2); border-radius:var(--radius-sm);
+}
+.picker-count strong { color:var(--indigo); }
+
+/* ── Kanji picker grid ───────────────────────────────────────────────────── */
+.picker-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(82px,1fr));
+  gap:8px;
+  max-height:420px;
+  overflow-y:auto;
+  padding:2px 2px 8px;
+  margin-bottom:20px;
+}
+.picker-grid::-webkit-scrollbar { width:5px; }
+.picker-grid::-webkit-scrollbar-thumb { background:var(--ink-4); border-radius:3px; }
+
+.picker-card {
+  display:flex; flex-direction:column; align-items:center; gap:4px;
+  padding:11px 6px 9px; border-radius:var(--radius-sm);
+  border:2px solid var(--paper-3); background:white;
+  cursor:pointer; transition:all .15s ease; user-select:none; position:relative;
+}
+.picker-card:hover { border-color:var(--indigo); transform:translateY(-2px); box-shadow:var(--shadow-sm); }
+
+.picker-card.selected {
+  border-color:var(--indigo); background:var(--indigo-l);
+}
+.picker-card.selected::after {
+  content:"✓"; position:absolute; top:4px; right:6px;
+  font-size:.58rem; color:var(--indigo); font-weight:700;
+}
+
+.picker-char {
+  font-family:"BIZ UDMincho","Noto Serif JP",serif;
+  font-size:2rem; font-weight:700; line-height:1; color:var(--ink);
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+}
+.picker-card.selected .picker-char { color:var(--indigo); }
+
+.picker-meaning {
+  font-size:.6rem; color:var(--ink-4); text-align:center;
+  max-width:76px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  font-style:italic;
+}
+
+/* SRS stage dot on picker card */
+.picker-stage-dot {
+  width:6px; height:6px; border-radius:50%; flex-shrink:0;
+}
+.dot-new     { background:var(--indigo); }
+.dot-learn   { background:#9b59b6; }
+.dot-review  { background:var(--gold); }
+.dot-mature  { background:var(--green); }
+.dot-due     { background:var(--accent); }
+
+/* ── Start bar (sticky footer inside dashboard) ──────────────────────────── */
+.start-bar {
+  position:sticky; bottom:0; background:var(--paper);
+  border-top:1px solid var(--paper-3);
+  padding:14px 0 4px; display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+  margin-top:8px;
+}
+.start-bar-info { font-size:.82rem; color:var(--ink-3); flex:1; }
+
+/* ── Review card ─────────────────────────────────────────────────────────── */
+.review-wrap { max-width:540px; margin:0 auto; }
+
+.review-progress { display:flex; align-items:center; gap:12px; margin-bottom:20px; }
+.rev-prog-bar { flex:1; height:6px; background:var(--paper-3); border-radius:3px; overflow:hidden; }
+.rev-prog-fill { height:100%; background:linear-gradient(90deg,var(--indigo),#5b7ec4); border-radius:3px; transition:width .4s; }
+.rev-counts { font-size:.75rem; color:var(--ink-3); white-space:nowrap; display:flex; gap:10px; }
+.rc-new  { color:var(--indigo); font-weight:600; }
+.rc-lrn  { color:#9b59b6; font-weight:600; }
+.rc-due  { color:var(--accent); font-weight:600; }
+
+.card-box {
+  background:white; border:1px solid var(--paper-3); border-radius:var(--radius);
+  box-shadow:var(--shadow); min-height:220px; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; padding:36px 24px; text-align:center;
+  margin-bottom:20px; position:relative; overflow:hidden; cursor:pointer;
+  transition:box-shadow .18s;
+}
+.card-box:hover { box-shadow:var(--shadow-md); }
+
+.card-tag {
+  position:absolute; top:12px; left:14px;
+  font-size:.6rem; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-4); font-weight:500;
+}
+.card-interval-badge {
+  position:absolute; top:10px; right:14px;
+  font-size:.6rem; background:var(--paper-2); padding:2px 8px; border-radius:10px; color:var(--ink-3);
+}
+
+.card-front-kanji {
+  font-family:"BIZ UDMincho","Noto Serif JP",serif;
+  font-size:7rem; font-weight:700; line-height:1; color:var(--ink);
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+}
+.card-hint { font-size:.78rem; color:var(--ink-4); margin-top:12px; font-style:italic; }
+
+/* Back face */
+.card-back { display:none; width:100%; }
+.card-back.revealed { display:block; }
+.card-meaning-big { font-size:1.8rem; font-weight:700; margin-bottom:14px; }
+.card-readings-row { display:flex; gap:24px; justify-content:center; flex-wrap:wrap; margin-bottom:14px; }
+.card-reading-block { text-align:center; }
+.card-reading-label { font-size:.58rem; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-4); margin-bottom:3px; }
+.card-reading-val {
+  font-family:"BIZ UDMincho","Noto Serif JP",serif; font-size:1.1rem;
+  -webkit-font-smoothing:antialiased;
+}
+.card-reading-val.on-col  { color:var(--indigo); }
+.card-reading-val.kun-col { color:var(--accent); }
+.card-example-box {
+  background:var(--paper); border-radius:var(--radius-sm);
+  padding:10px 14px; margin-top:10px; font-size:.85rem; line-height:1.7; text-align:left;
+}
+.ex-jp   { font-family:"BIZ UDMincho","Noto Serif JP",serif; font-size:1rem; -webkit-font-smoothing:antialiased; }
+.ex-hira { color:var(--accent); font-family:"BIZ UDMincho","Noto Serif JP",serif; font-size:.9rem; }
+.ex-en   { color:var(--ink-3); font-style:italic; font-size:.82rem; }
+
+/* Rating buttons */
+.rating-row {
+  display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:16px;
+}
+.rating-btn {
+  padding:12px 8px; border:2px solid var(--paper-3); border-radius:var(--radius-sm);
+  background:white; cursor:pointer; font-family:inherit; font-size:.78rem; font-weight:600;
+  transition:all .15s; text-align:center; line-height:1.3;
+}
+.rating-btn:hover { transform:translateY(-2px); box-shadow:var(--shadow-sm); }
+.rating-btn .rb-label { display:block; font-size:.65rem; font-weight:400; color:var(--ink-3); margin-top:3px; }
+.rb-again { border-color:rgba(192,57,43,.4); color:var(--accent); }
+.rb-again:hover { background:#fdf0ee; border-color:var(--accent); }
+.rb-hard  { border-color:rgba(230,126,34,.4); color:#e67e22; }
+.rb-hard:hover  { background:#fef9f0; border-color:#e67e22; }
+.rb-good  { border-color:rgba(46,74,122,.4);  color:var(--indigo); }
+.rb-good:hover  { background:var(--indigo-l); border-color:var(--indigo); }
+.rb-easy  { border-color:rgba(39,174,96,.4);  color:var(--green); }
+.rb-easy:hover  { background:var(--green-l);  border-color:var(--green); }
+
+.reveal-hint { text-align:center; font-size:.8rem; color:var(--ink-4); font-style:italic; margin-bottom:8px; }
+
+/* ── Congrats ─────────────────────────────────────────────────────────────── */
+.congrats-box { text-align:center; padding:48px 24px; }
+.congrats-icon { font-size:4rem; display:block; margin-bottom:12px; }
+.congrats-title { font-size:1.5rem; font-weight:700; margin-bottom:8px; }
+.congrats-sub { color:var(--ink-3); font-style:italic; margin-bottom:28px; }
+.next-review { font-size:.82rem; color:var(--ink-3); margin-top:16px; }
+
+/* ── Progress table ───────────────────────────────────────────────────────── */
+.prog-table { width:100%; border-collapse:collapse; font-size:.85rem; }
+.prog-table th {
+  text-align:left; padding:8px 12px; font-size:.63rem; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--ink-3); background:var(--paper-2); border-bottom:2px solid var(--paper-3);
+}
+.prog-table td { padding:9px 12px; border-bottom:1px solid var(--paper-2); vertical-align:middle; }
+.prog-table tr:last-child td { border-bottom:none; }
+.prog-table tr:hover td { background:var(--paper); }
+.prog-kanji { font-family:"BIZ UDMincho","Noto Serif JP",serif; font-size:1.5rem; font-weight:700; -webkit-font-smoothing:antialiased; }
+.srs-stage-badge {
+  display:inline-block; font-size:.6rem; letter-spacing:.08em; text-transform:uppercase;
+  padding:2px 8px; border-radius:10px; font-weight:600;
+}
+.stage-new    { background:var(--indigo-l); color:var(--indigo); }
+.stage-learn  { background:#f9f0ff; color:#9b59b6; }
+.stage-review { background:var(--gold-l); color:var(--gold); }
+.stage-mature { background:var(--green-l); color:var(--green); }
+.reset-btn-sm {
+  font-size:.65rem; padding:3px 9px; border:1px solid rgba(192,57,43,.3);
+  border-radius:4px; background:none; color:var(--accent); cursor:pointer;
+}
+.reset-btn-sm:hover { background:#fdf0ee; }
+
+@media (max-width:600px) {
+  .rating-row { grid-template-columns:1fr 1fr; }
+  .card-front-kanji { font-size:5rem; }
+  .srs-stats-row { grid-template-columns:1fr 1fr; }
+  .picker-grid { grid-template-columns:repeat(auto-fill,minmax(68px,1fr)); }
+}
+</style>
+</head>
+<body class="app-wrap">
+
+<header>
+  <a class="logo" href="/"><span class="logo-kanji">漢</span><span class="logo-text">Kanji Notebook</span></a>
+  <nav class="site-nav">
+    <a href="/">Home</a>
+    <a href="/examples.html">Examples</a>
+    <a href="/quiz.html">Quiz</a>
+    <a href="/match.html">Match</a>
+    <a href="/srs.html">SRS</a>
+  </nav>
+</header>
+
+<main class="page-content">
+
+  <!-- ── Dashboard + Picker ───────────────────────────────────────────────── -->
+  <div class="screen active" id="screen-dash">
+    <div class="page-title" style="margin-bottom:18px">
+      <div>
+        <h1>🧠 Spaced Repetition</h1>
+        <p class="text-muted">Pick the kanji you want to study, then start</p>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="showScreen('progress')">📊 Progress</button>
+    </div>
+
+    <!-- Stats row -->
+    <div class="srs-stats-row">
+      <div class="stat-card"><div class="stat-card-num due-color"   id="stat-due">0</div><div class="stat-card-label">Due Now</div></div>
+      <div class="stat-card"><div class="stat-card-num new-color"   id="stat-new">0</div><div class="stat-card-label">New</div></div>
+      <div class="stat-card"><div class="stat-card-num learn-color" id="stat-lrn">0</div><div class="stat-card-label">Learning</div></div>
+      <div class="stat-card"><div class="stat-card-num done-color"  id="stat-mat">0</div><div class="stat-card-label">Mature</div></div>
+      <div class="stat-card"><div class="stat-card-num total-color" id="stat-tot">0</div><div class="stat-card-label">Total</div></div>
+    </div>
+
+    <!-- Picker toolbar -->
+    <div class="picker-toolbar">
+      <div class="picker-search-wrap">
+        <span class="picker-search-icon">⌕</span>
+        <input class="picker-search" id="picker-search" placeholder="Filter kanji…" oninput="renderPicker()" autocomplete="off">
+      </div>
+      <div id="cat-pills" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+      <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+        <button class="btn btn-ghost btn-sm" onclick="selectDue()">Select Due</button>
+        <button class="btn btn-ghost btn-sm" onclick="selectAll()">Select All</button>
+        <button class="btn btn-ghost btn-sm" onclick="selectNone()">None</button>
+      </div>
+    </div>
+
+    <!-- Legend -->
+    <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:12px;font-size:.7rem;color:var(--ink-3)">
+      <span style="display:flex;align-items:center;gap:5px"><span class="picker-stage-dot dot-due"></span>Due</span>
+      <span style="display:flex;align-items:center;gap:5px"><span class="picker-stage-dot dot-new"></span>New</span>
+      <span style="display:flex;align-items:center;gap:5px"><span class="picker-stage-dot dot-learn"></span>Learning</span>
+      <span style="display:flex;align-items:center;gap:5px"><span class="picker-stage-dot dot-review"></span>Review</span>
+      <span style="display:flex;align-items:center;gap:5px"><span class="picker-stage-dot dot-mature"></span>Mature</span>
+    </div>
+
+    <!-- Picker grid -->
+    <div class="picker-grid" id="picker-grid"></div>
+
+    <!-- Sticky start bar -->
+    <div class="start-bar">
+      <div class="start-bar-info" id="start-bar-info">Select kanji above to begin</div>
+      <button class="btn btn-ghost btn-sm" onclick="showScreen('progress')">📊 Progress</button>
+      <button class="btn btn-secondary" id="start-btn" onclick="startReview()" disabled style="opacity:.5;cursor:not-allowed">
+        Start Session →
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Review ────────────────────────────────────────────────────────────── -->
+  <div class="screen" id="screen-review">
+    <div class="review-wrap">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <button class="btn btn-ghost btn-sm" onclick="endReview()">← Back</button>
+        <div class="rev-counts">
+          <span class="rc-new"  id="rc-new">0 new</span>
+          <span class="rc-lrn"  id="rc-lrn">0 learning</span>
+          <span class="rc-due"  id="rc-due">0 due</span>
+        </div>
+      </div>
+
+      <div class="review-progress">
+        <div class="rev-prog-bar"><div class="rev-prog-fill" id="rev-prog" style="width:0%"></div></div>
+        <span style="font-size:.75rem;color:var(--ink-3)" id="rev-counter">0 / 0</span>
+      </div>
+
+      <div class="card-box" id="card-box" onclick="revealCard()">
+        <span class="card-tag" id="card-tag">new</span>
+        <span class="card-interval-badge hidden" id="card-interval-badge"></span>
+        <div class="card-front-kanji" id="card-front"></div>
+        <div class="card-hint" id="card-hint">tap to reveal</div>
+        <div class="card-back" id="card-back">
+          <div class="card-meaning-big" id="cb-meaning"></div>
+          <div class="card-readings-row">
+            <div class="card-reading-block">
+              <div class="card-reading-label">On'yomi</div>
+              <div class="card-reading-val on-col" id="cb-on"></div>
+            </div>
+            <div class="card-reading-block">
+              <div class="card-reading-label">Kun'yomi</div>
+              <div class="card-reading-val kun-col" id="cb-kun"></div>
+            </div>
+          </div>
+          <div class="card-example-box" id="cb-examples"></div>
+        </div>
+      </div>
+
+      <div class="reveal-hint" id="reveal-hint">Tap card or press Space to reveal</div>
+
+      <div class="rating-row hidden" id="rating-row">
+        <button class="rating-btn rb-again" onclick="rate(0)">Again<span class="rb-label">&lt;1 min</span></button>
+        <button class="rating-btn rb-hard"  onclick="rate(1)">Hard<span  class="rb-label" id="hint-hard"></span></button>
+        <button class="rating-btn rb-good"  onclick="rate(2)">Good<span  class="rb-label" id="hint-good"></span></button>
+        <button class="rating-btn rb-easy"  onclick="rate(3)">Easy<span  class="rb-label" id="hint-easy"></span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Congrats ───────────────────────────────────────────────────────────── -->
+  <div class="screen" id="screen-done">
+    <div class="review-wrap">
+      <div class="card congrats-box">
+        <span class="congrats-icon" id="done-icon">🎉</span>
+        <div class="congrats-title">Session Complete!</div>
+        <div class="congrats-sub" id="done-sub"></div>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+          <button class="btn btn-primary" id="done-again-btn" onclick="startReview()">Study Again</button>
+          <button class="btn btn-ghost" onclick="showScreen('dash')">Change Selection</button>
+        </div>
+        <div class="next-review" id="next-review-txt"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Progress ──────────────────────────────────────────────────────────── -->
+  <div class="screen" id="screen-progress">
+    <div class="page-title" style="margin-bottom:20px">
+      <h1>📊 Progress</h1>
+      <button class="btn btn-ghost btn-sm" onclick="showScreen('dash')">← Back</button>
+    </div>
+    <div class="card" style="padding:0;overflow:hidden">
+      <div class="table-wrap">
+        <table class="prog-table">
+          <thead>
+            <tr><th>Kanji</th><th>Meaning</th><th>Stage</th><th>Interval</th><th>Due</th><th>Reviews</th><th></th></tr>
+          </thead>
+          <tbody id="prog-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<div id="toast-container"></div>
+<script src="/js/shared.js"></script>
+<script>
+// ═══════════════════════════════════════════════════════════════════════════════
+//  SM-2 Spaced Repetition Engine
+// ═══════════════════════════════════════════════════════════════════════════════
+const SRS_KEY  = 'srs-cards-v1';
+
+function today() { return new Date().toISOString().split('T')[0]; }
+function addDays(d, n) { const dt = new Date(d); dt.setDate(dt.getDate()+n); return dt.toISOString().split('T')[0]; }
+
+function loadCards() { try { return JSON.parse(localStorage.getItem(SRS_KEY)||'{}')||{}; } catch { return {}; } }
+function saveCards(c) { localStorage.setItem(SRS_KEY, JSON.stringify(c)); }
+
+// SM-2: rating 0=Again 1=Hard 2=Good 3=Easy
+function sm2(card, rating) {
+  let { ef=2.5, interval=0, repetitions=0 } = (card||{});
+  if (rating === 0) {
+    return { ef:Math.max(1.3, ef-0.2), interval:0, repetitions:0, stage:'learning', dueDate:today() };
+  }
+  const q = rating===1 ? 3 : rating===2 ? 4 : 5;
+  if      (repetitions===0) interval = 1;
+  else if (repetitions===1) interval = 6;
+  else                      interval = Math.round(interval * ef);
+  if (rating===1) interval = Math.max(1, Math.round(interval*0.8));
+  if (rating===3) interval = Math.round(interval*1.3);
+  interval = Math.max(1, Math.min(interval, 365));
+  const newEf = Math.max(1.3, ef + 0.1 - (5-q)*(0.08 + (5-q)*0.02));
+  return {
+    ef: Math.round(newEf*100)/100,
+    interval,
+    repetitions: repetitions+1,
+    stage: interval >= 21 ? 'mature' : 'review',
+    dueDate: addDays(today(), interval),
+  };
+}
+
+function fmtInterval(card) {
+  if (!card || card.stage==='new')      return 'new';
+  if (card.stage==='learning')          return '<10 min';
+  if (card.interval===1)                return '1 day';
+  if (card.interval<30)                 return card.interval+' days';
+  if (card.interval<365)                return Math.round(card.interval/7)+' wks';
+  return Math.round(card.interval/30)+' mo';
+}
+
+function nextIntervalHint(card, rating) {
+  if (rating===0) return '<1 min';
+  return fmtInterval(sm2(card||{ef:2.5,interval:0,repetitions:0}, rating));
+}
+
+function cardStage(char) {
+  const c = loadCards()[char];
+  if (!c || c.stage==='new') return 'new';
+  if (c.stage==='learning')  return 'learning';
+  if (c.dueDate <= today())   return 'due';
+  return c.stage; // 'review' or 'mature'
+}
+
+function stageDotClass(char) {
+  const s = cardStage(char);
+  return s==='due' ? 'dot-due' : s==='learning' ? 'dot-learn' : s==='review' ? 'dot-review' : s==='mature' ? 'dot-mature' : 'dot-new';
+}
+
+// ── State ──────────────────────────────────────────────────────────────────────
+let allKanji     = [];
+let selectedSet  = new Set();   // Set of kanji characters chosen by user
+let pickerCat    = 'all';
+let reviewQueue  = [];
+let qIdx         = 0;
+let revealed     = false;
+let sessionDone  = 0;
+let sessionTotal = 0;
+
+// ── Boot ───────────────────────────────────────────────────────────────────────
+async function init() {
+  try {
+    allKanji = await api.get('/api/kanji');
+    buildCatPills();
+    renderPicker();
+    updateStats();
+  } catch(e) { showToast('Failed to load kanji', 'error'); }
+}
+
+// ── Category pills ─────────────────────────────────────────────────────────────
+function buildCatPills() {
+  const cats = ['all', ...[...new Set(allKanji.map(k=>k.category))].sort()];
+  document.getElementById('cat-pills').innerHTML = cats.map(c =>
+    '<span class="filter-pill ' + (c===pickerCat?'active':'') + '" data-cat="'+c+'">' + (c==='all'?'All':c) + '</span>'
+  ).join('');
+  document.getElementById('cat-pills').addEventListener('click', function(e) {
+    const pill = e.target.closest('.filter-pill');
+    if (!pill) return;
+    pickerCat = pill.dataset.cat;
+    document.querySelectorAll('.filter-pill').forEach(p => p.classList.toggle('active', p===pill));
+    renderPicker();
+  });
+}
+
+// ── Render picker grid ─────────────────────────────────────────────────────────
+function getFilteredKanji() {
+  const q = (document.getElementById('picker-search')||{value:''}).value.trim().toLowerCase();
+  let list = pickerCat==='all' ? allKanji : allKanji.filter(k=>k.category===pickerCat);
+  if (q) list = list.filter(k =>
+    k.character.includes(q) ||
+    k.meaning.toLowerCase().includes(q) ||
+    (k.onyomi||[]).some(r=>r.toLowerCase().includes(q)) ||
+    (k.kunyomi||[]).some(r=>r.includes(q))
+  );
+  return list;
+}
+
+function renderPicker() {
+  const list = getFilteredKanji();
+  const grid = document.getElementById('picker-grid');
+
+  if (!list.length) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:32px;color:var(--ink-4);font-style:italic">No kanji match the filter</div>';
+    updateStartBar();
+    return;
+  }
+
+  grid.innerHTML = list.map(k => {
+    const sel = selectedSet.has(k.character);
+    const dotCls = stageDotClass(k.character);
+    return '<div class="picker-card ' + (sel?'selected':'') + '" data-char="' + encodeURIComponent(k.character) + '">' +
+      '<span class="picker-stage-dot ' + dotCls + '"></span>' +
+      '<span class="picker-char">' + k.character + '</span>' +
+      '<span class="picker-meaning">' + k.meaning + '</span>' +
+    '</div>';
+  }).join('');
+
+  grid.onclick = function(e) {
+    const card = e.target.closest('.picker-card');
+    if (!card) return;
+    const char = decodeURIComponent(card.dataset.char);
+    if (selectedSet.has(char)) {
+      selectedSet.delete(char);
+      card.classList.remove('selected');
+    } else {
+      selectedSet.add(char);
+      card.classList.add('selected');
+    }
+    updateStartBar();
+    updateStats();
+  };
+
+  updateStartBar();
+}
+
+// ── Selection helpers ──────────────────────────────────────────────────────────
+function selectAll() {
+  getFilteredKanji().forEach(k => selectedSet.add(k.character));
+  renderPicker();
+}
+
+function selectNone() {
+  getFilteredKanji().forEach(k => selectedSet.delete(k.character));
+  renderPicker();
+}
+
+function selectDue() {
+  // Select all due + learning + new cards (the ones that need study)
+  const cards = loadCards();
+  const dueCats = allKanji.filter(k => {
+    const c = cards[k.character];
+    if (!c || c.stage==='new') return true;           // new = needs study
+    if (c.stage==='learning') return true;             // still learning
+    if (c.dueDate <= today()) return true;              // overdue
+    return false;
+  });
+  // Also apply current category + search filter
+  const visible = new Set(getFilteredKanji().map(k=>k.character));
+  dueCats.filter(k=>visible.has(k.character)).forEach(k=>selectedSet.add(k.character));
+  renderPicker();
+}
+
+function updateStartBar() {
+  const n = selectedSet.size;
+  const info = document.getElementById('start-bar-info');
+  const btn  = document.getElementById('start-btn');
+  if (n === 0) {
+    info.textContent = 'Select kanji above to begin';
+    btn.disabled = true; btn.style.opacity='.5'; btn.style.cursor='not-allowed';
+  } else {
+    info.innerHTML = '<strong style="color:var(--indigo)">'+n+'</strong> kanji selected';
+    btn.disabled = false; btn.style.opacity='1'; btn.style.cursor='pointer';
+  }
+}
+
+// ── Stats ──────────────────────────────────────────────────────────────────────
+function updateStats() {
+  const cards = loadCards();
+  const pool  = allKanji;
+  let nDue=0, nNew=0, nLrn=0, nMat=0;
+  pool.forEach(k => {
+    const c = cards[k.character];
+    if (!c || c.stage==='new')      { nNew++;  return; }
+    if (c.stage==='learning')       { nLrn++;  return; }
+    if (c.dueDate <= today())        { nDue++;  return; }
+    if (c.stage==='mature')         { nMat++;  return; }
+  });
+  document.getElementById('stat-due').textContent = nDue;
+  document.getElementById('stat-new').textContent = nNew;
+  document.getElementById('stat-lrn').textContent = nLrn;
+  document.getElementById('stat-mat').textContent = nMat;
+  document.getElementById('stat-tot').textContent = pool.length;
+}
+
+// ── Build queue from selected set ──────────────────────────────────────────────
+function shuffle(arr) { return arr.slice().sort(()=>Math.random()-.5); }
+
+function buildQueue() {
+  const cards   = loadCards();
+  const chosen  = allKanji.filter(k => selectedSet.has(k.character));
+
+  const due     = [];
+  const learning= [];
+  const newCards= [];
+
+  chosen.forEach(k => {
+    const c = cards[k.character];
+    if (!c || c.stage==='new')      { newCards.push(k); return; }
+    if (c.stage==='learning')       { learning.push({...k, _srs:c}); return; }
+    if (c.dueDate <= today())        { due.push({...k, _srs:c}); return; }
+    // Not due yet but user explicitly selected it — add to new pile
+    newCards.push(k);
+  });
+
+  // Priority: due → learning → new
+  return [...shuffle(due), ...shuffle(learning), ...shuffle(newCards)];
+}
+
+// ── Start / End review ─────────────────────────────────────────────────────────
+function startReview() {
+  if (selectedSet.size === 0) { showToast('Select at least one kanji first', 'error'); return; }
+  reviewQueue  = buildQueue();
+  qIdx         = 0;
+  sessionDone  = 0;
+  sessionTotal = reviewQueue.length;
+  revealed     = false;
+  showScreen('review');
+  renderCard();
+}
+
+function endReview() { showScreen('dash'); updateStats(); renderPicker(); }
+
+// ── Render card ────────────────────────────────────────────────────────────────
+function renderCard() {
+  if (qIdx >= reviewQueue.length) { showCongrats(); return; }
+  const k = reviewQueue[qIdx];
+  const cards = loadCards();
+  const c  = cards[k.character];
+  const st = c ? c.stage : 'new';
+  revealed = false;
+
+  document.getElementById('card-front').textContent = k.character;
+  document.getElementById('card-tag').textContent   = st;
+  document.getElementById('card-hint').textContent  = 'Tap to reveal';
+  document.getElementById('card-hint').style.display = '';
+  document.getElementById('card-box').style.cursor   = 'pointer';
+
+  const badge = document.getElementById('card-interval-badge');
+  if (c && c.interval > 0) { badge.textContent = fmtInterval(c); badge.classList.remove('hidden'); }
+  else badge.classList.add('hidden');
+
+  // Back content
+  document.getElementById('cb-meaning').textContent = k.meaning;
+  document.getElementById('cb-on').textContent  = (k.onyomi||[]).join('、')||'—';
+  document.getElementById('cb-kun').textContent = (k.kunyomi||[]).join('、')||'—';
+  const exHtml = (k.examples||[]).slice(0,2).map(e =>
+    '<div class="ex-jp">'+e.kanji+'</div>'+
+    '<div class="ex-hira">'+e.hiragana+'</div>'+
+    '<div class="ex-en">'+e.english+'</div>'
+  ).join('<hr style="border:none;border-top:1px solid var(--paper-3);margin:6px 0">');
+  document.getElementById('cb-examples').innerHTML = exHtml ||
+    '<span style="color:var(--ink-4);font-style:italic;font-size:.82rem">No examples</span>';
+
+  document.getElementById('card-back').classList.remove('revealed');
+  document.getElementById('rating-row').classList.add('hidden');
+  document.getElementById('reveal-hint').style.display = '';
+
+  // Progress
+  document.getElementById('rev-counter').textContent = sessionDone + ' / ' + sessionTotal;
+  document.getElementById('rev-prog').style.width = sessionTotal ? (sessionDone/sessionTotal*100)+'%' : '0%';
+
+  // Count breakdown
+  const rest   = reviewQueue.slice(qIdx);
+  const cards2 = loadCards();
+  let rN=0,rL=0,rD=0;
+  rest.forEach(k2 => {
+    const c2=cards2[k2.character];
+    if (!c2||c2.stage==='new') rN++;
+    else if (c2.stage==='learning') rL++;
+    else rD++;
+  });
+  document.getElementById('rc-new').textContent = rN + ' new';
+  document.getElementById('rc-lrn').textContent = rL + ' learning';
+  document.getElementById('rc-due').textContent = rD + ' due';
+
+  // Interval hints
+  document.getElementById('hint-hard').textContent = nextIntervalHint(c, 1);
+  document.getElementById('hint-good').textContent = nextIntervalHint(c, 2);
+  document.getElementById('hint-easy').textContent = nextIntervalHint(c, 3);
+}
+
+function revealCard() {
+  if (revealed) return;
+  revealed = true;
+  document.getElementById('card-back').classList.add('revealed');
+  document.getElementById('rating-row').classList.remove('hidden');
+  document.getElementById('reveal-hint').style.display = 'none';
+  document.getElementById('card-hint').style.display   = 'none';
+  document.getElementById('card-box').style.cursor      = 'default';
+}
+
+// ── Rate card ──────────────────────────────────────────────────────────────────
+function rate(rating) {
+  const k = reviewQueue[qIdx];
+  const cards   = loadCards();
+  const existing = cards[k.character];
+  const result   = sm2(existing, rating);
+
+  cards[k.character] = {
+    ...(existing||{}), ...result,
+    totalReviews: ((existing||{}).totalReviews||0) + 1,
+    lapses: ((existing||{}).lapses||0) + (rating===0 ? 1 : 0),
+    lastReview: today(),
+  };
+  saveCards(cards);
+
+  if (rating === 0) {
+    const reinsert = Math.min(qIdx+3, reviewQueue.length);
+    reviewQueue.splice(reinsert, 0, {...k, _srs: cards[k.character]});
+    sessionTotal = reviewQueue.length;
+  }
+
+  sessionDone++;
+  qIdx++;
+  renderCard();
+}
+
+// ── Congrats ───────────────────────────────────────────────────────────────────
+function showCongrats() {
+  document.getElementById('done-icon').textContent  = sessionDone>=20?'🏆':sessionDone>=10?'🎉':'✅';
+  document.getElementById('done-sub').textContent   = 'Reviewed '+sessionDone+' cards from '+selectedSet.size+' selected kanji.';
+
+  const cards   = loadCards();
+  const nextDue = [...selectedSet].map(c => (cards[c]||{}).dueDate).filter(Boolean).sort()[0];
+  document.getElementById('next-review-txt').textContent =
+    nextDue && nextDue > today() ? 'Next card due: '+nextDue : '';
+
+  showScreen('done');
+  updateStats();
+}
+
+// ── Progress table ─────────────────────────────────────────────────────────────
+function loadProgress() {
+  const cards = loadCards();
+  const rows  = allKanji.map(k => ({k, c:cards[k.character]}))
+    .filter(r => r.c && r.c.stage !== 'new')
+    .sort((a,b) => (a.c.dueDate||''). localeCompare(b.c.dueDate||'')); 
+
+  document.getElementById('prog-tbody').innerHTML = rows.length
+    ? rows.map(({k,c}) =>
+        '<tr>' +
+        '<td class="prog-kanji">'+k.character+'</td>' +
+        '<td style="font-style:italic;color:var(--ink-3)">'+k.meaning+'</td>' +
+        '<td><span class="srs-stage-badge stage-'+c.stage+'">'+c.stage+'</span></td>' +
+        '<td>'+fmtInterval(c)+'</td>' +
+        '<td style="font-size:.82rem;color:' + (c.dueDate<=today()?'var(--accent)':'var(--ink-3)')+'">'+c.dueDate+'</td>' +
+        '<td style="font-size:.82rem;color:var(--ink-3)">' + (c.totalReviews||0) + '</td>' +
+        '<td><button class="reset-btn-sm" onclick="resetCard(\''+k.character+'\')">Reset</button></td>' +
+        '</tr>'
+      ).join('')
+    : '<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--ink-4);font-style:italic">No cards reviewed yet. Pick some kanji and start a session!</td></tr>';
+}
+
+function resetCard(char) {
+  const cards = loadCards();
+  delete cards[char];
+  saveCards(cards);
+  showToast('Reset '+char, 'info');
+  loadProgress();
+  updateStats();
+  renderPicker();
+}
+
+// ── Screen switching ───────────────────────────────────────────────────────────
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-'+id).classList.add('active');
+  if (id==='progress') loadProgress();
+}
+
+// ── Keyboard ───────────────────────────────────────────────────────────────────
+document.addEventListener('keydown', function(e) {
+  if (!document.getElementById('screen-review').classList.contains('active')) return;
+  if (e.key===' '||e.key==='Enter') { e.preventDefault(); if (!revealed) revealCard(); }
+  if (revealed) {
+    if (e.key==='1') rate(0);
+    else if (e.key==='2') rate(1);
+    else if (e.key==='3') rate(2);
+    else if (e.key==='4') rate(3);
+  }
+});
+
+init();
+</script>
+</body>
+</html>
+
