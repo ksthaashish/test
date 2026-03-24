@@ -183,6 +183,44 @@
 .quiz-score-pill .correct-count { color: var(--green); }
 .quiz-score-pill .wrong-count   { color: var(--accent); }
 
+/* SRS retry indicator */
+.retry-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 4px;
+  background: rgba(230,126,34,.12);
+  color: #c87722;
+  border: 1px solid rgba(230,126,34,.3);
+}
+
+.retry-info {
+  font-size: 0.78rem;
+  color: var(--accent);
+  font-style: italic;
+  text-align: center;
+  margin-top: 6px;
+  min-height: 22px;
+}
+
+.retry-queue-pill {
+  font-size: 0.72rem;
+  padding: 3px 10px;
+  border-radius: 20px;
+  background: rgba(230,126,34,.12);
+  color: #c87722;
+  font-weight: 600;
+  white-space: nowrap;
+  border: 1px solid rgba(230,126,34,.25);
+  display: none;
+}
+.retry-queue-pill.visible { display: inline-block; }
+
 /* Question card */
 .question-card {
   background: white;
@@ -561,14 +599,19 @@
         <span style="color:var(--ink-4)"> / </span>
         <span class="wrong-count" id="live-wrong">0</span>
       </span>
+      <span class="retry-queue-pill" id="retry-queue-pill">↺ <span id="retry-count">0</span> retry</span>
     </div>
 
     <div class="question-card">
-      <div class="q-mode-label" id="q-label"></div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;width:100%">
+        <div class="q-mode-label" id="q-label"></div>
+        <span class="retry-badge hidden" id="retry-badge">↺ Retry</span>
+      </div>
       <div class="q-prompt" id="q-prompt"></div>
     </div>
 
     <div class="options-grid" id="q-options"></div>
+    <div class="retry-info hidden" id="retry-info"></div>
 
     <!-- Answer reveal (shown after answering) -->
     <div class="answer-reveal hidden" id="answer-reveal">
@@ -655,6 +698,8 @@ let wrongCount    = 0;
 let answered      = false;
 let history       = [];   // {q, chosen, correct: bool}
 let catFilter     = 'all';
+let retryMap      = new Map(); // questionId -> retryCount (how many times seen)
+let retryTotal    = 0;         // total retries injected this session
 
 // ── Bootstrap ─────────────────────────────────────────────────────────────────
 async function init() {
@@ -821,6 +866,7 @@ function startQuiz() {
   questions = buildQuestions();
   if (!questions.length) { showToast('No questions available — add examples or change mode', 'error'); return; }
   qIndex = 0; score = 0; wrongCount = 0; answered = false; history = [];
+  retryMap.clear(); retryTotal = 0;
   document.getElementById('restart-btn').style.display = '';
   goStep(3);
   renderQuestion();
@@ -831,10 +877,37 @@ function renderQuestion() {
   const tot = questions.length;
   answered  = false;
 
+  // qId is the unique key for this question (based on answer + prompt)
+  const qId = q.answer + '|' + q.promptText;
+  const retries = retryMap.get(qId) || 0;
+
   document.getElementById('q-counter').textContent     = `${qIndex + 1} / ${tot}`;
   document.getElementById('progress-fill').style.width = `${(qIndex / tot) * 100}%`;
   document.getElementById('live-correct').textContent  = score;
   document.getElementById('live-wrong').textContent    = wrongCount;
+
+  // Show/hide retry badge
+  const retryBadge = document.getElementById('retry-badge');
+  if (retries > 0) {
+    retryBadge.textContent = '↺ Retry #' + retries;
+    retryBadge.classList.remove('hidden');
+  } else {
+    retryBadge.classList.add('hidden');
+  }
+
+  // Hide retry-info and update retry queue pill
+  document.getElementById('retry-info').classList.add('hidden');
+  const retryPending = questions.slice(qIndex + 1).filter((_, i) => {
+    const fq = questions[qIndex + 1 + i];
+    return fq && (retryMap.get(fq.answer + '|' + fq.promptText) || 0) > 0;
+  }).length;
+  const pill = document.getElementById('retry-queue-pill');
+  if (retryPending > 0) {
+    document.getElementById('retry-count').textContent = retryPending;
+    pill.classList.add('visible');
+  } else {
+    pill.classList.remove('visible');
+  }
 
   const promptEl = document.getElementById('q-prompt');
   promptEl.textContent = q.promptText;
@@ -874,10 +947,40 @@ function answer(btn, chosen, correct) {
   // History
   history.push({ q, chosen, isCorrect });
 
+  // ── SRS-style retry injection ──────────────────────────────────────────────
+  const qId = q.answer + '|' + q.promptText;
+  if (!isCorrect) {
+    const retries = (retryMap.get(qId) || 0) + 1;
+    retryMap.set(qId, retries);
+
+    // Space the retry out: 2 questions later for first miss, 3 for second, 4+ for third+
+    const spacing = retries === 1 ? 2 : retries === 2 ? 3 : 4;
+    const insertAt = Math.min(qIndex + spacing + 1, questions.length);
+    questions.splice(insertAt, 0, { ...q, _retryOf: qId });
+    retryTotal++;
+
+    // Show "coming back in N questions" hint
+    const inN = insertAt - qIndex;
+    const retryInfo = document.getElementById('retry-info');
+    retryInfo.textContent = '↺ Coming back in ' + inN + ' question' + (inN !== 1 ? 's' : '');
+    retryInfo.classList.remove('hidden');
+  } else {
+    // Correct — remove any future retries of this question (mastered)
+    if (retryMap.has(qId)) {
+      for (let i = questions.length - 1; i > qIndex; i--) {
+        if (questions[i]._retryOf === qId) {
+          questions.splice(i, 1);
+        }
+      }
+      retryMap.delete(qId);
+    }
+    document.getElementById('retry-info').classList.add('hidden');
+  }
+
   // Show reveal panel
   showReveal(q, isCorrect);
 
-  // Show next / finish
+  // Show next / finish (recalculate isLast since queue may have grown)
   const isLast = qIndex === questions.length - 1;
   document.getElementById('next-btn').classList.toggle('hidden', isLast);
   document.getElementById('finish-btn').classList.toggle('hidden', !isLast);
@@ -894,8 +997,15 @@ function showReveal(q, isCorrect) {
   document.getElementById('reveal-example').textContent  = q.revealExample;
 
   const tag = document.getElementById('reveal-tag');
-  tag.textContent  = isCorrect ? 'Correct!' : 'Incorrect';
-  tag.className    = `reveal-tag ${isCorrect ? 'tag-correct' : 'tag-wrong'}`;
+  const qId = q.answer + '|' + q.promptText;
+  const retries = retryMap.get(qId) || 0;
+  if (isCorrect) {
+    tag.textContent = retries > 0 ? '✓ Mastered!' : 'Correct!';
+    tag.className   = 'reveal-tag tag-correct';
+  } else {
+    tag.textContent = 'Incorrect — review again soon';
+    tag.className   = 'reveal-tag tag-wrong';
+  }
 }
 
 function nextQuestion() {
@@ -908,6 +1018,10 @@ function showResults() {
   // Final progress fill
   document.getElementById('progress-fill').style.width = '100%';
 
+  // questions array has grown from retries — count only unique original questions
+  const uniqueCount = history.filter((h, i) =>
+    !history.slice(0, i).some(prev => prev.q.answer === h.q.answer && prev.q.promptText === h.q.promptText)
+  ).length;
   const total = questions.length;
   const pct   = Math.round((score / total) * 100);
 
